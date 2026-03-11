@@ -4,24 +4,26 @@ import { ArrowRight, Code, Rocket, TrendingUp, MonitorPlay, Linkedin, Twitter, I
 
 export default function Home() {
   return (
-    <div className="min-h-screen text-[#e5e5e5] font-sans selection:bg-purple-900 selection:text-white relative">
-      {/* Animated Floating Background Video */}
-      <div className="fixed top-[-10%] left-[-10%] w-[120%] h-[120%] overflow-hidden pointer-events-none z-0 animate-float" style={{ animationDuration: '12s' }}>
-        <video 
-          autoPlay 
-          loop 
-          muted 
-          playsInline 
-          className="absolute inset-0 w-full h-full object-cover mix-blend-screen opacity-30"
-        >
-          {/* Using the uploaded network background video */}
-          <source src="/Video%20background.mp4" type="video/mp4" />
-        </video>
-        
-        {/* Color Blobs Behind Video */}
-        <div className="absolute top-[10%] left-[10%] w-[500px] h-[500px] bg-purple-600/20 rounded-full mix-blend-screen filter blur-[120px] animate-blob"></div>
-        <div className="absolute top-[30%] right-[10%] w-[600px] h-[600px] bg-pink-600/20 rounded-full mix-blend-screen filter blur-[120px] animate-blob animation-delay-2000"></div>
-        <div className="absolute bottom-[10%] left-[30%] w-[700px] h-[700px] bg-blue-600/20 rounded-full mix-blend-screen filter blur-[120px] animate-blob animation-delay-4000"></div>
+    <div className="min-h-screen bg-black text-[#e5e5e5] font-sans selection:bg-purple-900 selection:text-white relative">
+      {/* Animated Floating Background Elements */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
+        {/* Color Blobs with reduced opacity */}
+        <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-purple-600/5 rounded-full filter blur-[120px] animate-blob"></div>
+        <div className="absolute top-[20%] right-[-5%] w-[600px] h-[600px] bg-pink-600/5 rounded-full filter blur-[120px] animate-blob animation-delay-2000"></div>
+        <div className="absolute bottom-[-10%] left-[20%] w-[700px] h-[700px] bg-blue-600/5 rounded-full filter blur-[120px] animate-blob animation-delay-4000"></div>
+
+        {/* Floating Shapes (Inspired by Hero Section Elements) */}
+        <div className="absolute inset-0">
+          <div className="absolute top-[10%] left-[5%] text-purple-500/10 animate-float text-6xl" style={{ animationDuration: '12s' }}>▲</div>
+          <div className="absolute top-[40%] right-[10%] text-pink-500/10 animate-float text-7xl" style={{ animationDuration: '15s', animationDelay: '2s' }}>+</div>
+          <div className="absolute bottom-[15%] left-[20%] border-2 border-blue-500/10 rounded-full w-16 h-16 animate-float" style={{ animationDuration: '18s', animationDelay: '4s' }}></div>
+          <div className="absolute top-[65%] left-[8%] text-orange-500/10 animate-float text-5xl" style={{ animationDuration: '14s', animationDelay: '1s' }}>×</div>
+          <div className="absolute top-[15%] right-[25%] text-purple-500/10 animate-float text-4xl" style={{ animationDuration: '20s', animationDelay: '5s' }}>▲</div>
+          <div className="absolute bottom-[35%] right-[15%] text-pink-500/10 animate-float text-5xl" style={{ animationDuration: '16s', animationDelay: '3s' }}>+</div>
+          <div className="absolute top-[50%] left-[45%] border-2 border-orange-500/10 rounded-full w-8 h-8 animate-float" style={{ animationDuration: '13s', animationDelay: '6s' }}></div>
+          <div className="absolute bottom-[10%] right-[40%] text-blue-500/10 animate-float text-6xl" style={{ animationDuration: '19s', animationDelay: '2s' }}>×</div>
+          <div className="absolute top-[80%] left-[50%] text-purple-500/10 animate-float text-4xl" style={{ animationDuration: '17s', animationDelay: '1s' }}>▲</div>
+        </div>
       </div>
 
       {/* Navbar */}
@@ -52,37 +54,52 @@ export default function Home() {
         <section className="relative max-w-7xl mx-auto px-6 pt-20 pb-32 flex flex-col items-center">
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-purple-900/20 rounded-full blur-[120px] pointer-events-none -z-10" />
           
-          <div className="flex flex-col items-center justify-center text-center space-y-8 animate-fade-in relative z-10 w-full max-w-4xl pt-10">
+          <div className="flex flex-col items-center justify-center text-center space-y-8 animate-fade-in relative z-10 w-full max-w-5xl pt-10">
             <div className="inline-flex items-center justify-center gap-2 px-6 py-2 rounded-full border border-purple-500/30 bg-purple-500/10 text-purple-300 text-sm font-medium mb-4 glass-card backdrop-blur-md">
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-purple-500"></span>
               </span>
-              Creative Tech Professional & Educator
+              Frontend Engineer & Digital Creative
             </div>
             
-            <h1 className="text-6xl md:text-8xl font-bold font-heading leading-[1.1] tracking-tight text-white drop-shadow-2xl relative">
-              {/* Decorative Shapes Inspiried by Shoppadi */}
-              <div className="absolute -top-10 -left-10 w-8 h-8 text-purple-500/40 animate-bounce delay-700 hidden md:block select-none">▲</div>
-              <div className="absolute top-20 -right-20 w-8 h-8 text-pink-500/40 animate-pulse hidden md:block select-none">+</div>
-              <div className="absolute -bottom-10 left-1/4 w-6 h-6 border-2 border-blue-500/30 rounded-full animate-float hidden md:block select-none"></div>
-              <div className="absolute bottom-20 -left-20 w-8 h-8 text-orange-500/40 animate-spin-slow hidden md:block select-none">×</div>
-
-              Elevating brands through <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-500 to-orange-400">design & tech.</span>
+            <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold font-heading leading-[1.1] tracking-tight text-white drop-shadow-2xl relative">
+              Hi, I'm Grace &mdash; <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-500 to-orange-400">I build interfaces</span>{" "}
+              <span className="text-white">people love.</span>
             </h1>
             
-            <p className="text-xl md:text-2xl text-gray-300 max-w-2xl leading-relaxed mt-6">
-              Working at the intersection of technology, creativity, and business growth. I help individuals, startups, and organizations build strong digital identities and scalable online platforms.
+            <p className="text-xl md:text-2xl text-gray-400 max-w-2xl leading-relaxed mt-4">
+              A Frontend Engineer and Digital Creative passionate about building{" "}
+              <span className="text-white font-medium">clean, responsive, and user-friendly</span>{" "}
+              web interfaces. I combine design thinking with modern frontend technologies to create websites that are both beautiful and functional.
             </p>
+
+            {/* Social Proof Stats */}
+            <div className="flex items-center gap-8 pt-2">
+              <div className="text-center">
+                <div className="text-2xl font-black text-white">50+</div>
+                <div className="text-xs text-gray-500 uppercase tracking-widest font-medium">Projects Built</div>
+              </div>
+              <div className="w-px h-10 bg-white/10"></div>
+              <div className="text-center">
+                <div className="text-2xl font-black text-white">9+</div>
+                <div className="text-xs text-gray-500 uppercase tracking-widest font-medium">Years Exp.</div>
+              </div>
+              <div className="w-px h-10 bg-white/10"></div>
+              <div className="text-center">
+                <div className="text-2xl font-black text-white">10k+</div>
+                <div className="text-xs text-gray-500 uppercase tracking-widest font-medium">Students</div>
+              </div>
+            </div>
             
-            <div className="flex flex-col sm:flex-row gap-5 pt-8 w-full justify-center">
-              <Link href="#contact" className="group flex items-center justify-center gap-2 bg-gradient-to-r from-orange-500 to-pink-600 text-white px-10 py-4 rounded-full font-bold text-lg hover:scale-105 hover:shadow-[0_0_30px_rgba(236,72,153,0.4)] transition-all">
-                Let's Build Together
+            <div className="flex flex-col sm:flex-row gap-5 pt-4 w-full justify-center">
+              <Link href="#work" className="group flex items-center justify-center gap-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white px-10 py-4 rounded-full font-bold text-lg hover:scale-105 hover:shadow-[0_0_30px_rgba(168,85,247,0.4)] transition-all">
+                See My Work
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Link>
-              <Link href="#work" className="flex items-center justify-center gap-2 px-10 py-4 rounded-full font-bold text-lg text-white glass-card border border-white/20 hover:bg-white/10 transition-all backdrop-blur-md">
-                View Selected Works
+              <Link href="#contact" className="flex items-center justify-center gap-2 px-10 py-4 rounded-full font-bold text-lg text-white glass-card border border-white/20 hover:bg-white/10 transition-all backdrop-blur-md">
+                Let's Build Together
               </Link>
             </div>
           </div>
@@ -92,10 +109,10 @@ export default function Home() {
         <section className="relative z-10 border-y border-white/5 bg-white/[0.02] backdrop-blur-md py-10 overflow-hidden">
           <div className="flex animate-scroll whitespace-nowrap">
             {[ 
-              "JavaScript", "TypeScript", "PHP", "Python", "SQL", 
-              "JavaScript", "TypeScript", "PHP", "Python", "SQL",
-              "JavaScript", "TypeScript", "PHP", "Python", "SQL",
-              "JavaScript", "TypeScript", "PHP", "Python", "SQL"
+              "React", "Next.js", "TypeScript", "Tailwind CSS", "Figma",
+              "React", "Next.js", "TypeScript", "Tailwind CSS", "Figma",
+              "React", "Next.js", "TypeScript", "Tailwind CSS", "Figma",
+              "React", "Next.js", "TypeScript", "Tailwind CSS", "Figma"
             ].map((tech, i) => (
               <div key={i} className="flex items-center gap-6 mx-12">
                 <span className="text-3xl md:text-5xl font-black text-white/20 uppercase tracking-tighter hover:text-purple-500 transition-colors cursor-default select-none">{tech}</span>
@@ -109,8 +126,8 @@ export default function Home() {
         <section id="services" className="px-6 py-24 relative z-10 border-t border-white/5 bg-gradient-to-b from-transparent to-black/40">
           <div className="max-w-7xl mx-auto">
              <div className="text-center mb-16 space-y-4">
-              <h2 className="text-3xl md:text-5xl font-bold font-heading text-white">My Expertise</h2>
-              <p className="text-gray-400 max-w-2xl mx-auto">A multidisciplinary approach blending development, design, marketing, and education.</p>
+              <h2 className="text-3xl md:text-5xl font-bold font-heading text-white">What I Do</h2>
+              <p className="text-gray-400 max-w-2xl mx-auto">From pixel-perfect interfaces to scalable frontend architectures — here's how I can help you.</p>
              </div>
              
              <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -118,24 +135,24 @@ export default function Home() {
                   <div className="w-12 h-12 rounded-2xl bg-blue-500/10 flex items-center justify-center text-blue-400 mb-6 group-hover:scale-110 transition-transform shrink-0">
                     <Code className="w-6 h-6" />
                   </div>
-                  <h3 className="text-xl font-bold text-white mb-3">Web Development</h3>
-                  <p className="text-gray-400 leading-relaxed text-sm flex-grow">Building modern, performance-optimized applications using JavaScript, TypeScript, PHP, Python, and SQL.</p>
+                  <h3 className="text-xl font-bold text-white mb-3">Frontend Development</h3>
+                  <p className="text-gray-400 leading-relaxed text-sm flex-grow">Building fast, accessible, and responsive web apps with React, Next.js, TypeScript, and Tailwind CSS.</p>
                 </div>
 
                 <div className="glass-card p-6 md:p-8 rounded-3xl hover:-translate-y-2 transition-transform duration-500 group border border-white/5 hover:border-pink-500/30 flex flex-col h-full">
                   <div className="w-12 h-12 rounded-2xl bg-pink-500/10 flex items-center justify-center text-pink-400 mb-6 group-hover:scale-110 transition-transform shrink-0">
                     <Rocket className="w-6 h-6" />
                   </div>
-                  <h3 className="text-xl font-bold text-white mb-3">Graphic Design</h3>
-                  <p className="text-gray-400 leading-relaxed text-sm flex-grow">Creating visually compelling brand assets, logos, and UI designs using tools like Photoshop, Illustrator, Canva, and Figma.</p>
+                  <h3 className="text-xl font-bold text-white mb-3">UI/UX Design</h3>
+                  <p className="text-gray-400 leading-relaxed text-sm flex-grow">Designing polished, intuitive interfaces in Figma — from wireframes to high-fidelity design systems.</p>
                 </div>
                 
                 <div className="glass-card p-6 md:p-8 rounded-3xl hover:-translate-y-2 transition-transform duration-500 group border border-white/5 hover:border-purple-500/30 flex flex-col h-full">
                   <div className="w-12 h-12 rounded-2xl bg-purple-500/10 flex items-center justify-center text-purple-400 mb-6 group-hover:scale-110 transition-transform shrink-0">
-                    <TrendingUp className="w-6 h-6" />
+                    <Globe className="w-6 h-6" />
                   </div>
-                  <h3 className="text-xl font-bold text-white mb-3">Digital Marketing</h3>
-                  <p className="text-gray-400 leading-relaxed text-sm flex-grow">Leading strategic social media campaigns, content strategy, and growing massive online communities across all major platforms.</p>
+                  <h3 className="text-xl font-bold text-white mb-3">Web Performance</h3>
+                  <p className="text-gray-400 leading-relaxed text-sm flex-grow">Optimizing Core Web Vitals, accessibility scores, and SEO — ensuring every site loads fast and ranks well.</p>
                 </div>
 
                 <div className="glass-card p-6 md:p-8 rounded-3xl hover:-translate-y-2 transition-transform duration-500 group border border-white/5 hover:border-emerald-500/30 flex flex-col h-full">
@@ -143,13 +160,136 @@ export default function Home() {
                     <MonitorPlay className="w-6 h-6" />
                   </div>
                   <h3 className="text-xl font-bold text-white mb-3">Tech Education</h3>
-                  <p className="text-gray-400 leading-relaxed text-sm flex-grow">Empowering aspiring creatives and professionals with practical tech skills to leverage technology for innovation and digital ventures.</p>
+                  <p className="text-gray-400 leading-relaxed text-sm flex-grow">Empowering the next generation of frontend engineers through hands-on mentorship and structured programs.</p>
                 </div>
              </div>
           </div>
         </section>
 
-        {/* Enhanced Why Partner Section */}
+        {/* Tech Stack Breakdown */}
+        <section id="skills" className="px-6 py-24 relative z-10 border-t border-white/5">
+          <div className="max-w-7xl mx-auto">
+            <div className="text-center mb-16 space-y-4">
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400 text-xs font-bold uppercase tracking-[0.2em]">My Stack</div>
+              <h2 className="text-3xl md:text-5xl font-bold font-heading text-white">Tools & Technologies</h2>
+              <p className="text-gray-400 max-w-xl mx-auto">The technologies I work with daily to ship high-quality frontend products.</p>
+            </div>
+
+            <div className="grid lg:grid-cols-2 gap-6">
+              {/* Left Column: Skill Categories */}
+              <div className="space-y-4">
+                {/* Languages */}
+                <div className="glass-card p-6 rounded-2xl border border-white/5 hover:border-purple-500/20 transition-all duration-300">
+                  <h3 className="text-xs font-black uppercase tracking-[0.25em] text-purple-400 mb-5">Languages</h3>
+                  <div className="flex flex-wrap gap-3">
+                    {[
+                      { name: "JavaScript", color: "text-yellow-400", bg: "bg-yellow-400/10", border: "border-yellow-400/20" },
+                      { name: "TypeScript", color: "text-blue-400", bg: "bg-blue-400/10", border: "border-blue-400/20" },
+                      { name: "HTML5", color: "text-orange-400", bg: "bg-orange-400/10", border: "border-orange-400/20" },
+                      { name: "CSS3", color: "text-sky-400", bg: "bg-sky-400/10", border: "border-sky-400/20" },
+                    ].map((tech) => (
+                      <span key={tech.name} className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold ${tech.color} ${tech.bg} border ${tech.border} hover:scale-105 transition-transform cursor-default`}>
+                        {tech.name}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Frameworks */}
+                <div className="glass-card p-6 rounded-2xl border border-white/5 hover:border-blue-500/20 transition-all duration-300">
+                  <h3 className="text-xs font-black uppercase tracking-[0.25em] text-blue-400 mb-5">Frameworks & Libraries</h3>
+                  <div className="flex flex-wrap gap-3">
+                    {[
+                      { name: "React", color: "text-cyan-400", bg: "bg-cyan-400/10", border: "border-cyan-400/20" },
+                      { name: "Next.js", color: "text-white", bg: "bg-white/10", border: "border-white/15" },
+                      { name: "Vue.js", color: "text-emerald-400", bg: "bg-emerald-400/10", border: "border-emerald-400/20" },
+                      { name: "React Native", color: "text-cyan-300", bg: "bg-cyan-300/10", border: "border-cyan-300/20" },
+                    ].map((tech) => (
+                      <span key={tech.name} className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold ${tech.color} ${tech.bg} border ${tech.border} hover:scale-105 transition-transform cursor-default`}>
+                        {tech.name}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* State & Data */}
+                <div className="glass-card p-6 rounded-2xl border border-white/5 hover:border-pink-500/20 transition-all duration-300">
+                  <h3 className="text-xs font-black uppercase tracking-[0.25em] text-pink-400 mb-5">State & Data</h3>
+                  <div className="flex flex-wrap gap-3">
+                    {[
+                      { name: "React Query", color: "text-red-400", bg: "bg-red-400/10", border: "border-red-400/20" },
+                      { name: "Zustand", color: "text-orange-400", bg: "bg-orange-400/10", border: "border-orange-400/20" },
+                      { name: "Redux", color: "text-purple-400", bg: "bg-purple-400/10", border: "border-purple-400/20" },
+                      { name: "Zod", color: "text-indigo-400", bg: "bg-indigo-400/10", border: "border-indigo-400/20" },
+                    ].map((tech) => (
+                      <span key={tech.name} className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold ${tech.color} ${tech.bg} border ${tech.border} hover:scale-105 transition-transform cursor-default`}>
+                        {tech.name}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Right Column */}
+              <div className="space-y-4">
+                {/* UI & Styling */}
+                <div className="glass-card p-6 rounded-2xl border border-white/5 hover:border-emerald-500/20 transition-all duration-300">
+                  <h3 className="text-xs font-black uppercase tracking-[0.25em] text-emerald-400 mb-5">UI & Styling</h3>
+                  <div className="flex flex-wrap gap-3">
+                    {[
+                      { name: "Tailwind CSS", color: "text-cyan-400", bg: "bg-cyan-400/10", border: "border-cyan-400/20" },
+                      { name: "shadcn/ui", color: "text-white", bg: "bg-white/10", border: "border-white/15" },
+                      { name: "Framer Motion", color: "text-pink-400", bg: "bg-pink-400/10", border: "border-pink-400/20" },
+                      { name: "SASS", color: "text-rose-400", bg: "bg-rose-400/10", border: "border-rose-400/20" },
+                      { name: "Styled Components", color: "text-yellow-300", bg: "bg-yellow-300/10", border: "border-yellow-300/20" },
+                    ].map((tech) => (
+                      <span key={tech.name} className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold ${tech.color} ${tech.bg} border ${tech.border} hover:scale-105 transition-transform cursor-default`}>
+                        {tech.name}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Tools & Testing */}
+                <div className="glass-card p-6 rounded-2xl border border-white/5 hover:border-orange-500/20 transition-all duration-300">
+                  <h3 className="text-xs font-black uppercase tracking-[0.25em] text-orange-400 mb-5">Tools & Testing</h3>
+                  <div className="flex flex-wrap gap-3">
+                    {[
+                      { name: "Git", color: "text-orange-400", bg: "bg-orange-400/10", border: "border-orange-400/20" },
+                      { name: "Jest", color: "text-red-400", bg: "bg-red-400/10", border: "border-red-400/20" },
+                      { name: "Playwright", color: "text-emerald-400", bg: "bg-emerald-400/10", border: "border-emerald-400/20" },
+                      { name: "ESLint", color: "text-purple-400", bg: "bg-purple-400/10", border: "border-purple-400/20" },
+                      { name: "Vite", color: "text-yellow-400", bg: "bg-yellow-400/10", border: "border-yellow-400/20" },
+                    ].map((tech) => (
+                      <span key={tech.name} className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold ${tech.color} ${tech.bg} border ${tech.border} hover:scale-105 transition-transform cursor-default`}>
+                        {tech.name}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Design Tools */}
+                <div className="glass-card p-6 rounded-2xl border border-white/5 hover:border-violet-500/20 transition-all duration-300">
+                  <h3 className="text-xs font-black uppercase tracking-[0.25em] text-violet-400 mb-5">Design & Collaboration</h3>
+                  <div className="flex flex-wrap gap-3">
+                    {[
+                      { name: "Figma", color: "text-violet-400", bg: "bg-violet-400/10", border: "border-violet-400/20" },
+                      { name: "Storybook", color: "text-pink-400", bg: "bg-pink-400/10", border: "border-pink-400/20" },
+                      { name: "Photoshop", color: "text-blue-400", bg: "bg-blue-400/10", border: "border-blue-400/20" },
+                      { name: "Illustrator", color: "text-orange-400", bg: "bg-orange-400/10", border: "border-orange-400/20" },
+                    ].map((tech) => (
+                      <span key={tech.name} className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold ${tech.color} ${tech.bg} border ${tech.border} hover:scale-105 transition-transform cursor-default`}>
+                        {tech.name}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Why Hire Grace Section */}
         <section className="px-6 py-32 relative z-10 border-t border-white/5 bg-transparent">
           <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-orange-600/5 rounded-full blur-[150px] -z-10" />
           <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-purple-600/5 rounded-full blur-[150px] -z-10" />
@@ -157,14 +297,14 @@ export default function Home() {
           <div className="max-w-7xl mx-auto">
             <div className="text-center mb-20 space-y-6">
               <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-400 text-xs font-bold uppercase tracking-[0.2em] animate-fade-in">
-                Value Proposition
+                Why Hire Me
               </div>
               <h2 className="text-5xl md:text-7xl font-bold font-heading text-white tracking-tight">
-                Why Partner With <br />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-pink-500 to-purple-600">Grace Isitua</span>
+                Why Hire <br />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-pink-500 to-purple-600">Grace?</span>
               </h2>
               <p className="text-xl text-gray-400 max-w-2xl mx-auto leading-relaxed">
-                Choosing a partner for your digital journey is a strategic decision. I don't just build assets; I craft ecosystems that drive results and establish authority.
+                I don't just write code — I craft fast, accessible, and delightful frontend experiences that make users stay and businesses grow.
               </p>
             </div>
 
@@ -332,129 +472,75 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Refined Success Stories Section */}
-        <section id="testimonials" className="px-6 py-32 relative z-10 border-t border-white/5 bg-transparent">
-          <div className="max-w-7xl mx-auto">
-            <div className="text-center mb-20 space-y-4">
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-bold uppercase tracking-[0.2em]">
-                Testimonials
-              </div>
-              <h2 className="text-4xl md:text-6xl font-bold font-heading text-white tracking-tight">Success Stories</h2>
-              <p className="text-xl text-gray-400 max-w-2xl mx-auto">
-                Real feedback from the brands and individuals transformed through strategic digital partnership.
-              </p>
-            </div>
 
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {[
-                {
-                  quote: "Grace didn't just build our platform; she helped us define our digital identity. Her strategic approach to tech is unmatched in the industry.",
-                  author: "Olumide Adeyemi",
-                  role: "CEO, Shoppadi",
-                  color: "blue",
-                  initial: "O"
-                },
-                {
-                  quote: "The Backend Mastery boot-camp was a game-changer for my career. Grace simplifies complex engineering concepts into actionable knowledge.",
-                  author: "Sarah Ahmed",
-                  role: "Software Engineer",
-                  color: "purple",
-                  initial: "S"
-                },
-                {
-                  quote: "Our engagement increased by 300% within three months of implementing the growth strategies recommended by Grace. Truly exceptional.",
-                  author: "Daniel Anazie",
-                  role: "Founder, Sunbridge Consulting",
-                  color: "pink",
-                  initial: "D"
-                }
-              ].map((story, i) => (
-                <div key={i} className="glass-card p-12 rounded-[3.5rem] border border-white/5 relative group hover:border-white/10 transition-all duration-500 flex flex-col h-full bg-white/[0.01]">
-                  <div className={`absolute top-0 right-12 -translate-y-1/2 w-14 h-14 rounded-2xl bg-gradient-to-br from-${story.color}-500 to-${story.color}-700 flex items-center justify-center text-white shadow-2xl shadow-${story.color}-500/40 group-hover:scale-110 transition-transform duration-500`}>
-                    <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M14.017 21L14.017 18C14.017 16.8954 14.9124 16 16.017 16H19.017C20.1216 16 21.017 16.8954 21.017 18V21H14.017ZM3.01709 21L3.01709 18C3.01709 16.8954 3.91252 16 5.01709 16H8.01709C9.12166 16 10.0171 16.8954 10.0171 18V21H3.01709ZM16.017 14C13.8079 14 12.017 12.2091 12.017 10C12.017 7.79086 13.8079 6 16.017 6C18.2261 6 20.017 7.79086 20.017 10C20.017 12.2091 18.2261 14 16.017 14ZM5.01709 14C2.80795 14 1.01709 12.2091 1.01709 10C1.01709 7.79086 2.80795 6 5.01709 6C7.22623 6 9.01709 7.79086 9.01709 10C9.01709 12.2091 7.22623 14 5.01709 14Z"/></svg>
-                  </div>
-                  
-                  <div className="flex-grow">
-                    <p className="text-xl text-gray-300 italic leading-relaxed mb-10 group-hover:text-white transition-colors duration-500">
-                      "{story.quote}"
-                    </p>
-                  </div>
-                  
-                  <div className="flex items-center gap-5 pt-8 border-t border-white/5">
-                    <div className={`w-14 h-14 rounded-full bg-${story.color}-500/10 border border-${story.color}-500/20 flex items-center justify-center font-black text-${story.color}-400 text-xl group-hover:bg-${story.color}-500 group-hover:text-white transition-all duration-500 shadow-inner`}>
-                      {story.initial}
-                    </div>
-                    <div>
-                      <h4 className="text-white font-bold text-lg tracking-tight">{story.author}</h4>
-                      <p className="text-gray-500 text-sm font-medium uppercase tracking-wider">{story.role}</p>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
 
-        {/* Strategic Initiatives (Enhanced from ROADMAP.md Q3-Q4) */}
+        {/* How I'm Structured as a Frontend Engineer */}
         <section className="px-6 py-24 relative z-10 border-t border-white/5 bg-gradient-to-b from-black/40 to-purple-900/10 backdrop-blur-sm">
           <div className="max-w-7xl mx-auto">
              <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
               <div className="space-y-4">
-                <div className="inline-block px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400 text-xs font-bold uppercase tracking-widest">Active Development</div>
-                <h2 className="text-3xl md:text-5xl font-bold font-heading text-white">Strategic Initiatives</h2>
-                <p className="text-gray-400 max-w-xl">Turning the vision into reality. Here are the core programs currently being built for the upcoming quarters.</p>
+                <div className="inline-block px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400 text-xs font-bold uppercase tracking-widest">My Approach</div>
+                <h2 className="text-3xl md:text-5xl font-bold font-heading text-white">How I Work as a <br /><span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-500">Frontend Engineer</span></h2>
+                <p className="text-gray-400 max-w-xl">I don't just build UIs — I bring structure, intention, and engineering discipline to every project I touch.</p>
               </div>
              </div>
              
              <div className="grid lg:grid-cols-3 gap-8">
-                {/* Initiative 1: Mentorship */}
+                {/* Pillar 1: Design-to-Code */}
                 <div className="glass-card p-1 rounded-[2.5rem] overflow-hidden group transition-all duration-500 hover:shadow-[0_0_50px_rgba(168,85,247,0.2)]">
                   <div className="p-10 flex flex-col h-full bg-black/60 rounded-[2.4rem]">
                     <div className="w-12 h-12 rounded-2xl bg-purple-500/10 flex items-center justify-center text-purple-400 mb-8 border border-purple-500/20 group-hover:bg-purple-500 group-hover:text-white transition-all duration-300">
-                      <Code className="w-6 h-6" />
+                      <Rocket className="w-6 h-6" />
                     </div>
-                    <div className="text-purple-500 mb-3 font-bold tracking-widest uppercase text-xs">Education & Career</div>
-                    <h3 className="text-2xl font-bold text-white mb-4">Backend Mastery Boot-camp</h3>
-                    <p className="text-gray-400 leading-relaxed mb-10 flex-grow italic font-light">"A structured, project-based mentorship program targeting practical backend engineering with Node.js and PostgreSQL."</p>
-                    <Link href="#contact" className="inline-flex items-center justify-center py-3 px-6 rounded-full bg-white/5 border border-white/10 text-white font-bold hover:bg-purple-600 hover:border-purple-600 transition-all text-sm">
-                      Join the Waitlist
-                    </Link>
+                    <div className="text-purple-500 mb-3 font-bold tracking-widest uppercase text-xs">Design Thinking</div>
+                    <h3 className="text-2xl font-bold text-white mb-4">Design-to-Code Precision</h3>
+                    <p className="text-gray-400 leading-relaxed mb-10 flex-grow font-light">I bridge the gap between design and engineering. Every pixel is intentional — spacing, typography, color, and motion all work together to create cohesive, polished interfaces that match the Figma spec exactly.</p>
+                    <div className="flex flex-wrap gap-2">
+                      {["Figma", "Tailwind CSS", "Framer Motion"].map(t => (
+                        <span key={t} className="px-3 py-1 text-xs rounded-full border border-purple-500/20 bg-purple-500/5 text-purple-300">{t}</span>
+                      ))}
+                    </div>
                   </div>
                 </div>
 
-                {/* Initiative 2: SaaS MVP */}
+                {/* Pillar 2: Performance-First */}
                 <div className="glass-card p-1 rounded-[2.5rem] overflow-hidden group transition-all duration-500 hover:shadow-[0_0_50px_rgba(59,130,246,0.2)]">
                   <div className="p-10 flex flex-col h-full bg-black/60 rounded-[2.4rem] border-2 border-blue-500/20">
                     <div className="w-12 h-12 rounded-2xl bg-blue-500/10 flex items-center justify-center text-blue-400 mb-8 border border-blue-500/20 group-hover:bg-blue-500 group-hover:text-white transition-all duration-300">
-                      <Rocket className="w-6 h-6" />
+                      <Zap className="w-6 h-6" />
                     </div>
-                    <div className="text-blue-500 mb-3 font-bold tracking-widest uppercase text-xs">Innovation Lab</div>
-                    <h3 className="text-2xl font-bold text-white mb-4">SaaS Infrastructure Build</h3>
-                    <p className="text-gray-400 leading-relaxed mb-10 flex-grow italic font-light">"Building modular, high-performance SaaS infrastructure to demonstrate extreme data management capabilities."</p>
-                    <Link href="#contact" className="inline-flex items-center justify-center py-3 px-6 rounded-full bg-blue-600 text-white font-bold hover:bg-blue-700 transition-all text-sm shadow-[0_0_20px_rgba(37,99,235,0.3)]">
-                      Follow the Build
-                    </Link>
+                    <div className="text-blue-500 mb-3 font-bold tracking-widest uppercase text-xs">Engineering Standard</div>
+                    <h3 className="text-2xl font-bold text-white mb-4">Performance-First Mindset</h3>
+                    <p className="text-gray-400 leading-relaxed mb-10 flex-grow font-light">I write code that ships fast and runs faster. From lazy loading and code splitting to optimized rendering and Core Web Vitals — I treat performance as a feature, not an afterthought.</p>
+                    <div className="flex flex-wrap gap-2">
+                      {["Next.js", "React", "TypeScript"].map(t => (
+                        <span key={t} className="px-3 py-1 text-xs rounded-full border border-blue-500/20 bg-blue-500/5 text-blue-300">{t}</span>
+                      ))}
+                    </div>
                   </div>
                 </div>
 
-                {/* Initiative 3: Global Scaling */}
+                {/* Pillar 3: Component Architecture */}
                 <div className="glass-card p-1 rounded-[2.5rem] overflow-hidden group transition-all duration-500 hover:shadow-[0_0_50px_rgba(236,72,153,0.2)]">
                   <div className="p-10 flex flex-col h-full bg-black/60 rounded-[2.4rem]">
                     <div className="w-12 h-12 rounded-2xl bg-pink-500/10 flex items-center justify-center text-pink-400 mb-8 border border-pink-500/20 group-hover:bg-pink-500 group-hover:text-white transition-all duration-300">
-                      <TrendingUp className="w-6 h-6" />
+                      <Code className="w-6 h-6" />
                     </div>
-                    <div className="text-pink-500 mb-3 font-bold tracking-widest uppercase text-xs">Growth & Expansion</div>
-                    <h3 className="text-2xl font-bold text-white mb-4">Global Strategy Operations</h3>
-                    <p className="text-gray-400 leading-relaxed mb-10 flex-grow italic font-light">"Scaling digital growth systems to help African brands compete on an international stage with seamless integrations."</p>
-                    <Link href="#contact" className="inline-flex items-center justify-center py-3 px-6 rounded-full bg-white/5 border border-white/10 text-white font-bold hover:bg-pink-600 hover:border-pink-600 transition-all text-sm">
-                      Partner with Us
-                    </Link>
+                    <div className="text-pink-500 mb-3 font-bold tracking-widest uppercase text-xs">Scalable Architecture</div>
+                    <h3 className="text-2xl font-bold text-white mb-4">Component-Driven Structure</h3>
+                    <p className="text-gray-400 leading-relaxed mb-10 flex-grow font-light">I build UIs as reusable, testable component systems — not one-off pages. Every project is structured for scalability so teams can grow the codebase without stepping on each other.</p>
+                    <div className="flex flex-wrap gap-2">
+                      {["React", "shadcn/ui", "Storybook"].map(t => (
+                        <span key={t} className="px-3 py-1 text-xs rounded-full border border-pink-500/20 bg-pink-500/5 text-pink-300">{t}</span>
+                      ))}
+                    </div>
                   </div>
                 </div>
              </div>
           </div>
         </section>
-        {/* Long Term Vision (From ROADMAP.md) */}
+
+        {/* Long Term Goals as a Frontend Engineer */}
         <section className="px-6 py-24 relative z-10 border-t border-white/5 bg-black/40 backdrop-blur-sm overflow-hidden">
           {/* Subtle Starry Effect Background */}
           <div className="absolute inset-0 z-0 opacity-20 pointer-events-none">
@@ -475,44 +561,44 @@ export default function Home() {
 
           <div className="max-w-7xl mx-auto relative z-10">
             <div className="text-center mb-16 space-y-4">
-              <div className="text-purple-400 font-bold tracking-[0.2em] uppercase text-sm mb-2">The Future</div>
-              <h2 className="text-3xl md:text-5xl font-bold font-heading text-white">Long-term Vision</h2>
-              <p className="text-gray-400 max-w-2xl mx-auto">Building sustainable ecosystems for digital growth and technical empowerment.</p>
+              <div className="text-purple-400 font-bold tracking-[0.2em] uppercase text-sm mb-2">Where I'm Headed</div>
+              <h2 className="text-3xl md:text-5xl font-bold font-heading text-white">Long-term Goals</h2>
+              <p className="text-gray-400 max-w-2xl mx-auto">Building toward impact — as an engineer, contributor, and educator in the frontend ecosystem.</p>
             </div>
 
             <div className="grid lg:grid-cols-3 gap-8">
-              {/* Vision 1: Digital Growth Agency */}
+              {/* Goal 1: Senior Engineer */}
               <div className="relative group">
                 <div className="absolute -inset-1 bg-gradient-to-r from-purple-600 to-blue-600 rounded-3xl blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
                 <div className="relative glass-card p-10 rounded-3xl border border-white/10 h-full flex flex-col">
-                  <div className="text-4xl mb-6">🏢</div>
-                  <h3 className="text-2xl font-bold text-white mb-4">Digital Growth Agency</h3>
+                  <div className="text-4xl mb-6">🎯</div>
+                  <h3 className="text-2xl font-bold text-white mb-4">Senior Frontend Engineer</h3>
                   <p className="text-gray-400 leading-relaxed">
-                    Establishing a full-scale agency providing end-to-end branding, marketing systems, and high-converting tech solutions for global brands.
+                    Growing into a Senior or Staff Frontend Engineer role at a high-impact product team — leading architecture decisions, mentoring junior engineers, and owning complex UI systems end-to-end.
                   </p>
                 </div>
               </div>
 
-              {/* Vision 2: Tech Education Platform */}
+              {/* Goal 2: Open Source */}
               <div className="relative group">
                 <div className="absolute -inset-1 bg-gradient-to-r from-pink-600 to-orange-600 rounded-3xl blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
                 <div className="relative glass-card p-10 rounded-3xl border border-white/10 h-full flex flex-col">
-                  <div className="text-4xl mb-6">🎓</div>
-                  <h3 className="text-2xl font-bold text-white mb-4">EdTech Platform</h3>
+                  <div className="text-4xl mb-6">📦</div>
+                  <h3 className="text-2xl font-bold text-white mb-4">Open Source Contributor</h3>
                   <p className="text-gray-400 leading-relaxed">
-                    A comprehensive, project-based online learning platform focused entirely on actionable tech education to empower the next generation.
+                    Shipping reusable, production-grade component libraries and Next.js starter kits — giving back to the community that shaped my engineering skills and helping teams build faster.
                   </p>
                 </div>
               </div>
 
-              {/* Vision 3: Open Source Integration */}
+              {/* Goal 3: Frontend Educator */}
               <div className="relative group">
                 <div className="absolute -inset-1 bg-gradient-to-r from-emerald-600 to-teal-600 rounded-3xl blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
                 <div className="relative glass-card p-10 rounded-3xl border border-white/10 h-full flex flex-col">
-                  <div className="text-4xl mb-6">🚀</div>
-                  <h3 className="text-2xl font-bold text-white mb-4">Open Source Integration</h3>
+                  <div className="text-4xl mb-6">🧑‍🏫</div>
+                  <h3 className="text-2xl font-bold text-white mb-4">Frontend Mastery Education</h3>
                   <p className="text-gray-400 leading-relaxed">
-                    Producing world-class open-source boilerplates (Next.js + WooCommerce) to help the community leverage top-tier architectural patterns.
+                    Launching a structured, project-based Frontend Mastery program that empowers the next generation of African engineers with real-world React, TypeScript, and system design skills.
                   </p>
                 </div>
               </div>

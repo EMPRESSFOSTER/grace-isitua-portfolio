@@ -67,24 +67,25 @@ const graphicsCatalogue = [
 
 export default function Catalogue() {
   return (
-    <div className="min-h-screen text-[#e5e5e5] font-sans selection:bg-purple-900 selection:text-white relative">
-      {/* Animated Floating Background Video */}
-      <div className="fixed top-[-10%] left-[-10%] w-[120%] h-[120%] overflow-hidden pointer-events-none z-0 animate-float" style={{ animationDuration: '12s' }}>
-        <video 
-          autoPlay 
-          loop 
-          muted 
-          playsInline 
-          className="absolute inset-0 w-full h-full object-cover mix-blend-screen opacity-30"
-        >
-          {/* Using the uploaded network background video */}
-          <source src="/Video%20background.mp4" type="video/mp4" />
-        </video>
-        
-        {/* Color Blobs Behind Video */}
-        <div className="absolute top-[10%] left-[10%] w-[500px] h-[500px] bg-purple-600/20 rounded-full mix-blend-screen filter blur-[120px] animate-blob"></div>
-        <div className="absolute top-[30%] right-[10%] w-[600px] h-[600px] bg-pink-600/20 rounded-full mix-blend-screen filter blur-[120px] animate-blob animation-delay-2000"></div>
-        <div className="absolute bottom-[10%] left-[30%] w-[700px] h-[700px] bg-blue-600/20 rounded-full mix-blend-screen filter blur-[120px] animate-blob animation-delay-4000"></div>
+    <div className="min-h-screen bg-black text-[#e5e5e5] font-sans selection:bg-purple-900 selection:text-white relative">
+      {/* Animated Floating Background Elements */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
+        {/* Color Blobs with reduced opacity */}
+        <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-purple-600/5 rounded-full filter blur-[120px] animate-blob"></div>
+        <div className="absolute top-[20%] right-[-5%] w-[600px] h-[600px] bg-pink-600/5 rounded-full filter blur-[120px] animate-blob animation-delay-2000"></div>
+        <div className="absolute bottom-[-10%] left-[20%] w-[700px] h-[700px] bg-blue-600/5 rounded-full filter blur-[120px] animate-blob animation-delay-4000"></div>
+
+        {/* Floating Shapes */}
+        <div className="absolute inset-0">
+          <div className="absolute top-[10%] left-[5%] text-purple-500/10 animate-float text-6xl" style={{ animationDuration: '12s' }}>▲</div>
+          <div className="absolute top-[40%] right-[10%] text-pink-500/10 animate-float text-7xl" style={{ animationDuration: '15s', animationDelay: '2s' }}>+</div>
+          <div className="absolute bottom-[15%] left-[20%] border-2 border-blue-500/10 rounded-full w-16 h-16 animate-float" style={{ animationDuration: '18s', animationDelay: '4s' }}></div>
+          <div className="absolute top-[65%] left-[8%] text-orange-500/10 animate-float text-5xl" style={{ animationDuration: '14s', animationDelay: '1s' }}>×</div>
+          <div className="absolute top-[15%] right-[25%] text-purple-500/10 animate-float text-4xl" style={{ animationDuration: '20s', animationDelay: '5s' }}>▲</div>
+          <div className="absolute bottom-[35%] right-[15%] text-pink-500/10 animate-float text-5xl" style={{ animationDuration: '16s', animationDelay: '3s' }}>+</div>
+          <div className="absolute top-[50%] left-[45%] border-2 border-orange-500/10 rounded-full w-8 h-8 animate-float" style={{ animationDuration: '13s', animationDelay: '6s' }}></div>
+          <div className="absolute bottom-[10%] right-[40%] text-blue-500/10 animate-float text-6xl" style={{ animationDuration: '19s', animationDelay: '2s' }}>×</div>
+        </div>
       </div>
 
       {/* Navbar */}
