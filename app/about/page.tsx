@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, Mail, Linkedin, Twitter, Instagram, Sparkles, GraduationCap, Building2, Palette } from "lucide-react";
-
+import Timeline from "@/components/Timeline";
 export default function About() {
   return (
     <div className="min-h-screen bg-black text-[#e5e5e5] font-sans selection:bg-purple-900 selection:text-white relative">
@@ -148,6 +148,9 @@ export default function About() {
             </div>
           </div>
           
+          {/* Experience Timeline Section */}
+          <Timeline />
+
           {/* Quote Section */}
           <div className="py-24 text-center">
             <div className="glass-card p-16 rounded-[4rem] border border-white/10 relative overflow-hidden group">

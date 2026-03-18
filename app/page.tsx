@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Code, Rocket, TrendingUp, MonitorPlay, Linkedin, Twitter, Instagram, Mail, Zap, Shield, Globe, Users } from "lucide-react";
+import Timeline from "@/components/Timeline";
 
 export default function Home() {
   return (
@@ -35,7 +36,7 @@ export default function Home() {
           <div className="hidden md:flex items-center gap-8 text-sm font-medium text-gray-400">
             <Link href="#services" className="hover:text-purple-400 transition-colors">Expertise</Link>
             <Link href="#work" className="hover:text-purple-400 transition-colors">Case Studies</Link>
-            <Link href="/about" className="hover:text-purple-400 transition-colors">About</Link>
+            <Link href="#about" className="hover:text-purple-400 transition-colors">About</Link>
             <Link href="/catalogue" className="hover:text-purple-400 transition-colors">Catalogue</Link>
             <Link 
               href="https://wa.me/2349015028666?text=Hello%20Grace%20%F0%9F%91%8B%0AI%20just%20visited%20your%20website%20and%20I%27m%20interested%20in%20learning%20more%20about%20your%20services.%20Please%20I%27d%20like%20to%20discuss%20a%20project%20with%20you." 
@@ -51,56 +52,73 @@ export default function Home() {
 
       <main className="pt-32 pb-20 overflow-hidden">
         {/* Hero Section */}
-        <section className="relative max-w-7xl mx-auto px-6 pt-20 pb-32 flex flex-col items-center">
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-purple-900/20 rounded-full blur-[120px] pointer-events-none -z-10" />
+        <section className="relative max-w-7xl mx-auto px-6 pt-20 pb-32">
+          <div className="absolute top-1/2 left-1/4 -translate-y-1/2 w-[600px] h-[600px] bg-purple-900/20 rounded-full blur-[120px] pointer-events-none -z-10" />
           
-          <div className="flex flex-col items-center justify-center text-center space-y-8 animate-fade-in relative z-10 w-full max-w-5xl pt-10">
-            <div className="inline-flex items-center justify-center gap-2 px-6 py-2 rounded-full border border-purple-500/30 bg-purple-500/10 text-purple-300 text-sm font-medium mb-4 glass-card backdrop-blur-md">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-purple-500"></span>
-              </span>
-              Frontend Engineer & Digital Creative
-            </div>
-            
-            <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold font-heading leading-[1.1] tracking-tight text-white drop-shadow-2xl relative">
-              Hi, I'm Grace &mdash; <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-500 to-orange-400">I build interfaces</span>{" "}
-              <span className="text-white">people love.</span>
-            </h1>
-            
-            <p className="text-xl md:text-2xl text-gray-400 max-w-2xl leading-relaxed mt-4">
-              A Frontend Engineer and Digital Creative passionate about building{" "}
-              <span className="text-white font-medium">clean, responsive, and user-friendly</span>{" "}
-              web interfaces. I combine design thinking with modern frontend technologies to create websites that are both beautiful and functional.
-            </p>
+          <div className="grid lg:grid-cols-2 gap-16 items-center relative z-10 w-full pt-10">
+            {/* Text Content */}
+            <div className="flex flex-col items-start space-y-8 animate-fade-in-up">
+              <div className="inline-flex items-center gap-2 px-6 py-2 rounded-full border border-purple-500/30 bg-purple-500/10 text-purple-300 text-sm font-medium mb-2 glass-card backdrop-blur-md">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-purple-500"></span>
+                </span>
+                Frontend Engineer & Digital Creative
+              </div>
+              
+              <h1 className="text-5xl md:text-7xl lg:text-[5.5rem] font-bold font-heading leading-[1.05] tracking-tight text-white drop-shadow-2xl">
+                Hi, I'm Grace &mdash; <br />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-500 to-orange-400">I build interfaces</span>{" "}
+                <span className="text-white">people love.</span>
+              </h1>
+              
+              <p className="text-xl text-gray-400 max-w-xl leading-relaxed mt-2">
+                A Frontend Engineer and Digital Creative passionate about building{" "}
+                <span className="text-white font-medium">clean, responsive, and user-friendly</span>{" "}
+                web interfaces. I combine design thinking with modern frontend technologies.
+              </p>
 
-            {/* Social Proof Stats */}
-            <div className="flex items-center gap-8 pt-2">
-              <div className="text-center">
-                <div className="text-2xl font-black text-white">50+</div>
-                <div className="text-xs text-gray-500 uppercase tracking-widest font-medium">Projects Built</div>
+              {/* Social Proof Stats */}
+              <div className="flex items-center gap-6 pt-2">
+                <div>
+                  <div className="text-2xl font-black text-white">50+</div>
+                  <div className="text-[10px] text-gray-500 uppercase tracking-widest font-bold mt-1">Projects Built</div>
+                </div>
+                <div className="w-px h-8 bg-white/10"></div>
+                <div>
+                  <div className="text-2xl font-black text-white">9+</div>
+                  <div className="text-[10px] text-gray-500 uppercase tracking-widest font-bold mt-1">Years Exp.</div>
+                </div>
+                <div className="w-px h-8 bg-white/10"></div>
+                <div>
+                  <div className="text-2xl font-black text-white">10k+</div>
+                  <div className="text-[10px] text-gray-500 uppercase tracking-widest font-bold mt-1">Students</div>
+                </div>
               </div>
-              <div className="w-px h-10 bg-white/10"></div>
-              <div className="text-center">
-                <div className="text-2xl font-black text-white">9+</div>
-                <div className="text-xs text-gray-500 uppercase tracking-widest font-medium">Years Exp.</div>
-              </div>
-              <div className="w-px h-10 bg-white/10"></div>
-              <div className="text-center">
-                <div className="text-2xl font-black text-white">10k+</div>
-                <div className="text-xs text-gray-500 uppercase tracking-widest font-medium">Students</div>
+              
+              <div className="flex flex-col sm:flex-row gap-4 pt-6 w-full sm:w-auto">
+                <Link href="#work" className="group flex items-center justify-center gap-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white px-8 py-4 rounded-full font-bold text-lg hover:scale-105 hover:shadow-[0_0_30px_rgba(168,85,247,0.4)] transition-all">
+                  See My Work
+                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                </Link>
+                <Link href="#contact" className="flex items-center justify-center gap-2 px-8 py-4 rounded-full font-bold text-lg text-white glass-card border border-white/20 hover:bg-white/10 transition-all backdrop-blur-md">
+                  Let's Build Together
+                </Link>
               </div>
             </div>
-            
-            <div className="flex flex-col sm:flex-row gap-5 pt-4 w-full justify-center">
-              <Link href="#work" className="group flex items-center justify-center gap-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white px-10 py-4 rounded-full font-bold text-lg hover:scale-105 hover:shadow-[0_0_30px_rgba(168,85,247,0.4)] transition-all">
-                See My Work
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </Link>
-              <Link href="#contact" className="flex items-center justify-center gap-2 px-10 py-4 rounded-full font-bold text-lg text-white glass-card border border-white/20 hover:bg-white/10 transition-all backdrop-blur-md">
-                Let's Build Together
-              </Link>
+
+            {/* Portrait Image (Right Side) */}
+            <div className="relative group animate-fade-in-right hidden lg:block">
+              <div className="absolute -inset-4 bg-gradient-to-r from-purple-600 to-pink-600 rounded-[3rem] blur-2xl opacity-20 group-hover:opacity-40 transition-opacity duration-1000"></div>
+              <div className="relative aspect-[4/5] rounded-[2.5rem] overflow-hidden border border-white/10 glass-card">
+                <Image 
+                  src="/grace-portrait.jpeg" 
+                  alt="Grace Isitua Portrait" 
+                  fill 
+                  style={{ objectFit: "cover" }} 
+                  className="group-hover:scale-105 transition-transform duration-1000 grayscale-[0.2] hover:grayscale-0"
+                />
+              </div>
             </div>
           </div>
         </section>
@@ -472,6 +490,75 @@ export default function Home() {
           </div>
         </section>
 
+        {/* About Me & Narrative Section */}
+        <section id="about" className="px-6 py-24 relative z-10 border-t border-white/5 bg-transparent overflow-hidden">
+          <div className="max-w-7xl mx-auto grid lg:grid-cols-[1.2fr_0.8fr] gap-16 items-center">
+            {/* Left Side: Story Text */}
+            <div className="space-y-16">
+              <div className="space-y-6 text-center md:text-left">
+                <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400 text-xs font-bold uppercase tracking-widest">
+                  The Story
+                </div>
+                <h2 className="text-3xl md:text-5xl font-bold text-white">The Intersection of Tech & Creativity</h2>
+                <div className="w-20 h-1.5 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full mx-auto md:mx-0"></div>
+              </div>
+              
+              <div className="text-lg text-gray-300 space-y-8 leading-relaxed">
+                <p>
+                  I am a creative technology professional, digital entrepreneur, and educator with expertise spanning web design, graphic design, digital marketing, and social media management. I work at the <span className="text-white font-bold">intersection of technology, creativity, and business growth</span>, helping individuals, startups, and organizations build strong digital identities and scalable online platforms.
+                </p>
+                <p>
+                  As a web designer and developer, I specialize in building modern, responsive, and user-friendly websites that help brands establish a strong online presence. I work with core technologies such as <span className="text-purple-400 font-medium">JavaScript, TypeScript, React, Next.js, and SQL</span>, enabling me to create fast, scalable, and performance-optimized applications. My work focuses on combining functionality, clean design, and user experience to deliver websites that are both visually appealing and strategically effective.
+                </p>
+              </div>
+            </div>
+
+            {/* Right Side: Animated Marquee */}
+            <div className="hidden lg:block relative h-[500px] w-full border border-white/5 bg-white/[0.02] backdrop-blur-md rounded-[3rem] overflow-hidden group">
+               {/* Fading transparent masks at top and bottom */}
+               <div className="absolute inset-0 pointer-events-none z-10" style={{ backgroundImage: "linear-gradient(to bottom, #000 0%, transparent 20%, transparent 80%, #000 100%)" }}></div>
+               
+               {/* Subtle background glow */}
+               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-purple-600/10 rounded-full blur-[80px] pointer-events-none transition-all duration-700 group-hover:bg-pink-600/10"></div>
+               
+               <div className="flex flex-col animate-scroll-up pt-10">
+                  {[ 
+                    "React", "Next.js", "TypeScript", "Tailwind CSS", "Figma",
+                    "Node.js", "Python", "UX/UI Design", "Digital Marketing",
+                    "React", "Next.js", "TypeScript", "Tailwind CSS", "Figma",
+                    "Node.js", "Python", "UX/UI Design", "Digital Marketing",
+                    "React", "Next.js", "TypeScript", "Tailwind CSS", "Figma",
+                    "Node.js", "Python", "UX/UI Design", "Digital Marketing"
+                  ].map((tech, i) => (
+                    <div key={i} className="flex flex-col items-center justify-center gap-6 py-6 border-b border-white/5">
+                      <span className="text-4xl font-black text-white/10 uppercase tracking-tighter hover:text-purple-500 transition-colors cursor-default select-none group-hover:text-white/20">
+                        {tech}
+                      </span>
+                      {i % 2 === 0 && <div className="w-2 h-2 rounded-full bg-purple-500/30"></div>}
+                      {i % 2 !== 0 && <div className="w-2 h-2 rounded-full bg-pink-500/30"></div>}
+                    </div>
+                  ))}
+               </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Experience Timeline Section */}
+        <Timeline />
+
+        {/* Quote Section */}
+        <section className="px-6 py-24 relative z-10 border-b border-white/5">
+          <div className="max-w-7xl mx-auto text-center">
+            <div className="glass-card p-16 rounded-[4rem] border border-white/10 relative overflow-hidden group">
+               <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-purple-600/20 via-transparent to-orange-600/20 blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-1000"></div>
+               <span className="text-8xl text-purple-500/20 absolute top-10 left-10 italic">"</span>
+               <h2 className="text-3xl md:text-5xl font-bold text-white italic max-w-4xl mx-auto leading-tight relative z-10">
+                The future belongs to those who bridge the gap between what is <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500">technically possible</span> and what is <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-orange-500">creatively breathtaking.</span>
+               </h2>
+               <div className="mt-12 text-gray-500 font-medium tracking-widest uppercase">— Grace Isitua</div>
+            </div>
+          </div>
+        </section>
 
 
         {/* How I'm Structured as a Frontend Engineer */}
@@ -609,7 +696,7 @@ export default function Home() {
         <section id="contact" className="px-6 py-24 relative z-10 border-t border-white/5 bg-black/40 backdrop-blur-sm">
           <div className="max-w-4xl mx-auto text-center glass-card p-12 md:p-20 rounded-[3rem] border border-white/10 relative overflow-hidden">
              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-1/2 bg-gradient-to-b from-purple-500/20 to-transparent blur-3xl -z-10" />
-            <h2 className="text-4xl md:text-6xl font-bold font-heading text-white mb-6 tracking-tight">Let's build something <br className="hidden md:block"/><span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-500">extraordinary.</span></h2>
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold font-heading text-white mb-6 tracking-tight leading-tight">Let’s build something that doesn’t just look good — <br className="hidden md:block"/><span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-500">but performs.</span></h2>
             <p className="text-xl text-gray-400 mb-10 max-w-2xl mx-auto leading-relaxed">Ready to scale your brand with a world-class digital experience? Let's discuss your next big objective.</p>
             
             <div className="flex flex-col md:flex-row items-center justify-center gap-6 mb-12">

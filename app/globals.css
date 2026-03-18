@@ -83,6 +83,15 @@ html {
   animation: scroll 40s linear infinite;
 }
 
+@keyframes scroll-up {
+  from { transform: translateY(0); }
+  to { transform: translateY(-50%); }
+}
+
+.animate-scroll-up {
+  animation: scroll-up 40s linear infinite;
+}
+
 .pause {
   animation-play-state: paused;
 }

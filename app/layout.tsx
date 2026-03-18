@@ -13,7 +13,7 @@ const outfit = Outfit({
 });
 
 export const metadata: Metadata = {
-  title: "Grace Isitua | Digital Growth Strategist & Software Engineer",
+  title: "Grace Isitua | I build modern websites",
   description: "I help startups, SMEs, and creators transform their ideas into powerful online experiences. Building digital brands that compete globally.",
 };
 

@@ -1,10 +1,10 @@
 # Grace Isitua
 
-**Software Engineer & Digital Growth Strategist**
+**Software Engineer & I build modern websites**
 
 Grace Isitua is a Software Engineer who builds digital brands that compete globally. 
 
-As a Software Engineer and Digital Growth Strategist, she helps startups, SMEs, and creators transform their ideas into powerful online experiences. From brand identity to high-converting websites and marketing systems, she focuses on results that drive real business growth.
+As a Software Engineer, I build modern websites and help startups, SMEs, and creators transform their ideas into powerful online experiences. From brand identity to high-converting websites and marketing systems, she focuses on results that drive real business growth.
 
 She is also passionate about tech education and empowering the next generation of digital creators through practical learning.
 
