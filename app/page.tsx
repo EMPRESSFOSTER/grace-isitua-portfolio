@@ -35,7 +35,7 @@ export default function Home() {
           </Link>
           <div className="hidden md:flex items-center gap-8 text-sm font-medium text-gray-400">
             <Link href="#services" className="hover:text-purple-400 transition-colors">Expertise</Link>
-            <Link href="#work" className="hover:text-purple-400 transition-colors">Case Studies</Link>
+            <Link href="#selected-work" className="hover:text-purple-400 transition-colors">Case Studies</Link>
             <Link href="#about" className="hover:text-purple-400 transition-colors">About</Link>
             <Link href="/catalogue" className="hover:text-purple-400 transition-colors">Catalogue</Link>
             <Link 
@@ -81,23 +81,23 @@ export default function Home() {
               {/* Social Proof Stats */}
               <div className="flex items-center gap-6 pt-2">
                 <div>
-                  <div className="text-2xl font-black text-white">50+</div>
+                  <div className="text-2xl font-black text-white">10+</div>
                   <div className="text-[10px] text-gray-500 uppercase tracking-widest font-bold mt-1">Projects Built</div>
                 </div>
                 <div className="w-px h-8 bg-white/10"></div>
                 <div>
-                  <div className="text-2xl font-black text-white">9+</div>
+                  <div className="text-2xl font-black text-white">3+</div>
                   <div className="text-[10px] text-gray-500 uppercase tracking-widest font-bold mt-1">Years Exp.</div>
                 </div>
                 <div className="w-px h-8 bg-white/10"></div>
                 <div>
-                  <div className="text-2xl font-black text-white">10k+</div>
-                  <div className="text-[10px] text-gray-500 uppercase tracking-widest font-bold mt-1">Students</div>
+                  <div className="text-2xl font-black text-white">15+</div>
+                  <div className="text-[10px] text-gray-500 uppercase tracking-widest font-bold mt-1">Happy Clients</div>
                 </div>
               </div>
               
               <div className="flex flex-col sm:flex-row gap-4 pt-6 w-full sm:w-auto">
-                <Link href="#work" className="group flex items-center justify-center gap-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white px-8 py-4 rounded-full font-bold text-lg hover:scale-105 hover:shadow-[0_0_30px_rgba(168,85,247,0.4)] transition-all">
+                <Link href="#selected-work" className="group flex items-center justify-center gap-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white px-8 py-4 rounded-full font-bold text-lg hover:scale-105 hover:shadow-[0_0_30px_rgba(168,85,247,0.4)] transition-all">
                   See My Work
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </Link>
@@ -400,7 +400,7 @@ export default function Home() {
                     <div className="w-14 h-14 rounded-2xl bg-purple-500/10 flex items-center justify-center text-purple-500 mb-2 border border-purple-500/10">
                        <Shield className="w-7 h-7" />
                     </div>
-                    <h3 className="text-6xl font-black text-white tracking-tighter group-hover:scale-110 transition-transform duration-500">50+</h3>
+                    <h3 className="text-6xl font-black text-white tracking-tighter group-hover:scale-110 transition-transform duration-500">10+</h3>
                     <div>
                        <p className="text-white font-bold text-lg">Brands Transformed</p>
                        <p className="text-sm text-gray-500">Across 3 Continents</p>
@@ -414,10 +414,10 @@ export default function Home() {
                     <div className="w-14 h-14 rounded-2xl bg-pink-500/10 flex items-center justify-center text-pink-500 mb-2 border border-pink-500/10">
                        <Users className="w-7 h-7" />
                     </div>
-                    <h3 className="text-6xl font-black text-white tracking-tighter group-hover:scale-110 transition-transform duration-500">10k+</h3>
+                    <h3 className="text-6xl font-black text-white tracking-tighter group-hover:scale-110 transition-transform duration-500">15+</h3>
                     <div>
-                       <p className="text-white font-bold text-lg">Students Impacted</p>
-                       <p className="text-sm text-gray-500">Through Tech Mentorship</p>
+                       <p className="text-white font-bold text-lg">Happy Clients</p>
+                       <p className="text-sm text-gray-500">Global Satisfaction</p>
                     </div>
                  </div>
               </div>
@@ -428,7 +428,7 @@ export default function Home() {
                     <div className="w-14 h-14 rounded-2xl bg-orange-500/10 flex items-center justify-center text-orange-500 mb-2 border border-orange-500/10">
                        <TrendingUp className="w-7 h-7" />
                     </div>
-                    <h3 className="text-6xl font-black text-white tracking-tighter group-hover:scale-110 transition-transform duration-500">9+</h3>
+                    <h3 className="text-6xl font-black text-white tracking-tighter group-hover:scale-110 transition-transform duration-500">3+</h3>
                     <div>
                        <p className="text-white font-bold text-lg">Years of Experience</p>
                        <p className="text-sm text-gray-500">In Design & Development</p>
@@ -440,7 +440,7 @@ export default function Home() {
         </section>
 
         {/* Case Studies */}
-        <section id="work" className="px-6 py-24 relative z-10 border-t border-white/5 bg-black/40 backdrop-blur-sm">
+        <section id="selected-work" className="px-6 py-24 relative z-10 border-t border-white/5 bg-black/40 backdrop-blur-sm">
           <div className="max-w-7xl mx-auto">
             <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
               <div className="space-y-4">
