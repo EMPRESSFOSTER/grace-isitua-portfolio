@@ -13,17 +13,11 @@ export default function Home() {
         <div className="absolute top-[20%] right-[-5%] w-[600px] h-[600px] bg-pink-600/5 rounded-full filter blur-[120px] animate-blob animation-delay-2000"></div>
         <div className="absolute bottom-[-10%] left-[20%] w-[700px] h-[700px] bg-blue-600/5 rounded-full filter blur-[120px] animate-blob animation-delay-4000"></div>
 
-        {/* Floating Shapes (Inspired by Hero Section Elements) */}
+        {/* Floating Shapes - Reduced for Performance */}
         <div className="absolute inset-0">
-          <div className="absolute top-[10%] left-[5%] text-purple-500/10 animate-float text-6xl" style={{ animationDuration: '12s' }}>▲</div>
-          <div className="absolute top-[40%] right-[10%] text-pink-500/10 animate-float text-7xl" style={{ animationDuration: '15s', animationDelay: '2s' }}>+</div>
-          <div className="absolute bottom-[15%] left-[20%] border-2 border-blue-500/10 rounded-full w-16 h-16 animate-float" style={{ animationDuration: '18s', animationDelay: '4s' }}></div>
-          <div className="absolute top-[65%] left-[8%] text-orange-500/10 animate-float text-5xl" style={{ animationDuration: '14s', animationDelay: '1s' }}>×</div>
-          <div className="absolute top-[15%] right-[25%] text-purple-500/10 animate-float text-4xl" style={{ animationDuration: '20s', animationDelay: '5s' }}>▲</div>
-          <div className="absolute bottom-[35%] right-[15%] text-pink-500/10 animate-float text-5xl" style={{ animationDuration: '16s', animationDelay: '3s' }}>+</div>
-          <div className="absolute top-[50%] left-[45%] border-2 border-orange-500/10 rounded-full w-8 h-8 animate-float" style={{ animationDuration: '13s', animationDelay: '6s' }}></div>
-          <div className="absolute bottom-[10%] right-[40%] text-blue-500/10 animate-float text-6xl" style={{ animationDuration: '19s', animationDelay: '2s' }}>×</div>
-          <div className="absolute top-[80%] left-[50%] text-purple-500/10 animate-float text-4xl" style={{ animationDuration: '17s', animationDelay: '1s' }}>▲</div>
+          <div className="absolute top-[40%] right-[10%] text-pink-500/10 animate-float text-7xl" style={{ animationDuration: '15s' }}>+</div>
+          <div className="absolute top-[20%] left-[8%] text-purple-500/10 animate-float text-5xl" style={{ animationDuration: '18s', animationDelay: '2s' }}>▲</div>
+          <div className="absolute bottom-[25%] right-[5%] text-orange-500/10 animate-float text-6xl" style={{ animationDuration: '16s', animationDelay: '4s' }}>×</div>
         </div>
       </div>
 

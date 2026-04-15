@@ -1,17 +1,32 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
+import { useEffect, useRef } from "react";
 
 export default function CustomCursor() {
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const [isHovering, setIsHovering] = useState(false);
-  const [isVisible, setIsVisible] = useState(false);
+  const cursorRef = useRef<HTMLDivElement>(null);
+  const mousePos = useRef({ x: 0, y: 0 });
+  const isHoveringRef = useRef(false);
+  const isVisibleRef = useRef(false);
 
   useEffect(() => {
-    const updateMousePosition = (e: MouseEvent) => {
-      setMousePosition({ x: e.clientX, y: e.clientY });
-      if (!isVisible) setIsVisible(true);
+    const cursor = cursorRef.current;
+    if (!cursor) return;
+
+    const updateCursorPosition = () => {
+      if (!isVisibleRef.current) return;
+      
+      const x = mousePos.current.x - 20;
+      const y = mousePos.current.y - 20;
+      cursor.style.transform = `translate(${x}px, ${y}px)`;
+    };
+
+    const handleMouseMove = (e: MouseEvent) => {
+      mousePos.current = { x: e.clientX, y: e.clientY };
+      if (!isVisibleRef.current) {
+        isVisibleRef.current = true;
+        cursor.style.opacity = "1";
+      }
+      updateCursorPosition();
     };
 
     const handleMouseOver = (e: MouseEvent) => {
@@ -23,44 +38,35 @@ export default function CustomCursor() {
         target.closest("button") ||
         target.getAttribute("role") === "button";
         
-      setIsHovering(!!isClickable);
+      isHoveringRef.current = !!isClickable;
+      cursor.style.scale = isClickable ? "1.5" : "1";
+      cursor.style.backgroundColor = isClickable ? "rgba(168, 85, 247, 0.2)" : "rgba(168, 85, 247, 0.05)";
     };
 
     const handleMouseLeave = () => {
-      setIsVisible(false);
+      isVisibleRef.current = false;
+      cursor.style.opacity = "0";
     };
 
-    window.addEventListener("mousemove", updateMousePosition);
-    window.addEventListener("mouseover", handleMouseOver);
+    window.addEventListener("mousemove", handleMouseMove, { passive: true });
+    window.addEventListener("mouseover", handleMouseOver, { passive: true });
     document.documentElement.addEventListener("mouseleave", handleMouseLeave);
-    document.documentElement.addEventListener("mouseenter", () => setIsVisible(true));
+    document.documentElement.addEventListener("mouseenter", () => {
+      isVisibleRef.current = true;
+      cursor.style.opacity = "1";
+    });
 
     return () => {
-      window.removeEventListener("mousemove", updateMousePosition);
+      window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("mouseover", handleMouseOver);
       document.documentElement.removeEventListener("mouseleave", handleMouseLeave);
-      document.documentElement.removeEventListener("mouseenter", () => setIsVisible(true));
     };
-  }, [isVisible]);
+  }, []);
 
   return (
-    <>
-      <motion.div
-        className="fixed top-0 left-0 w-10 h-10 border border-purple-500/50 rounded-full pointer-events-none z-[9999] hidden md:flex items-center justify-center bg-purple-500/10 backdrop-blur-sm"
-        animate={{
-          x: mousePosition.x - 20,
-          y: mousePosition.y - 20,
-          scale: isHovering ? 1.5 : isVisible ? 1 : 0,
-          opacity: isVisible ? 1 : 0,
-          backgroundColor: isHovering ? "rgba(168, 85, 247, 0.2)" : "rgba(168, 85, 247, 0.05)",
-        }}
-        transition={{
-          type: "spring",
-          stiffness: 150,
-          damping: 15,
-          mass: 0.8,
-        }}
-      />
-    </>
+    <div
+      ref={cursorRef}
+      className="fixed top-0 left-0 w-10 h-10 border border-purple-500/50 rounded-full pointer-events-none z-[9999] hidden md:flex items-center justify-center bg-purple-500/10 backdrop-blur-sm opacity-0 transition-[background-color,scale] duration-200"
+    />
   );
 }
