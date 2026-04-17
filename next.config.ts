@@ -5,8 +5,6 @@ const nextConfig: NextConfig = {
   images: {
     formats: ['image/avif', 'image/webp'],
     minimumCacheTTL: 60 * 60 * 24 * 365, // 1 year
-    sizes: [256, 384, 640, 750, 828, 1080, 1200, 1920, 2048, 3840],
-    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
   },
 
   // Performance & security headers
@@ -54,8 +52,6 @@ const nextConfig: NextConfig = {
   // Optimizations
   compress: true,
   productionBrowserSourceMaps: false,
-  optimizeFonts: true,
-  swcMinify: true,
 
   // React strict mode for development
   reactStrictMode: true,

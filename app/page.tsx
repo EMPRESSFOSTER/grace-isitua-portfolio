@@ -1,9 +1,18 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Code, Rocket, TrendingUp, MonitorPlay, Linkedin, Twitter, Instagram, Mail, Zap, Shield, Globe, Users } from "lucide-react";
+import { ArrowRight, Code, Rocket, TrendingUp, MonitorPlay, Linkedin, Twitter, Instagram, Mail, Zap, Shield, Globe, Users, Menu, X } from "lucide-react";
 import Timeline from "@/components/Timeline";
+import { useState } from "react";
 
 export default function Home() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+
+  const closeMenu = () => setIsMenuOpen(false);
+
   return (
     <div className="min-h-screen bg-black text-[#e5e5e5] font-sans selection:bg-purple-900 selection:text-white relative">
       {/* Animated Floating Background Elements */}
@@ -15,9 +24,9 @@ export default function Home() {
 
         {/* Floating Shapes - Reduced for Performance */}
         <div className="absolute inset-0">
-          <div className="absolute top-[40%] right-[10%] text-pink-500/10 animate-float text-7xl" style={{ animationDuration: '15s' }}>+</div>
-          <div className="absolute top-[20%] left-[8%] text-purple-500/10 animate-float text-5xl" style={{ animationDuration: '18s', animationDelay: '2s' }}>▲</div>
-          <div className="absolute bottom-[25%] right-[5%] text-orange-500/10 animate-float text-6xl" style={{ animationDuration: '16s', animationDelay: '4s' }}>×</div>
+          <div className="absolute top-[40%] right-[10%] text-pink-500/10 animate-float text-7xl" style={{ animationDuration: '15s', top: '40%', right: '10%' }}>+</div>
+          <div className="absolute top-[20%] left-[8%] text-purple-500/10 animate-float text-5xl" style={{ animationDuration: '18s', animationDelay: '2s', top: '20%', left: '8%' }}>▲</div>
+          <div className="absolute bottom-[25%] right-[5%] text-orange-500/10 animate-float text-6xl" style={{ animationDuration: '16s', animationDelay: '4s', bottom: '25%', right: '5%' }}>×</div>
         </div>
       </div>
 
@@ -27,6 +36,8 @@ export default function Home() {
           <Link href="/" className="font-heading font-bold text-2xl tracking-tighter text-white">
             Grace<span className="text-purple-500">Isitua.</span>
           </Link>
+
+          {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-8 text-sm font-medium text-gray-400">
             <Link href="#services" className="hover:text-purple-400 transition-colors">Expertise</Link>
             <Link href="#selected-work" className="hover:text-purple-400 transition-colors">Case Studies</Link>
@@ -41,7 +52,61 @@ export default function Home() {
               Let's Talk
             </Link>
           </div>
+
+          {/* Mobile Menu Button */}
+          <button
+            onClick={toggleMenu}
+            className="md:hidden flex items-center justify-center w-10 h-10 rounded-lg bg-white/10 hover:bg-white/20 transition-colors border border-white/10"
+            aria-label="Toggle menu"
+          >
+            {isMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          </button>
         </div>
+
+        {/* Mobile Navigation Dropdown */}
+        {isMenuOpen && (
+          <div className="md:hidden absolute top-20 left-0 right-0 bg-black/95 border-b border-white/5 backdrop-blur-xl">
+            <div className="max-w-7xl mx-auto px-6 py-6 space-y-4">
+              <Link 
+                href="#services" 
+                className="block text-sm font-medium text-gray-400 hover:text-purple-400 transition-colors py-2"
+                onClick={closeMenu}
+              >
+                Expertise
+              </Link>
+              <Link 
+                href="#selected-work" 
+                className="block text-sm font-medium text-gray-400 hover:text-purple-400 transition-colors py-2"
+                onClick={closeMenu}
+              >
+                Case Studies
+              </Link>
+              <Link 
+                href="#about" 
+                className="block text-sm font-medium text-gray-400 hover:text-purple-400 transition-colors py-2"
+                onClick={closeMenu}
+              >
+                About
+              </Link>
+              <Link 
+                href="/catalogue" 
+                className="block text-sm font-medium text-gray-400 hover:text-purple-400 transition-colors py-2"
+                onClick={closeMenu}
+              >
+                Catalogue
+              </Link>
+              <Link 
+                href="https://wa.me/2349015028666?text=Hello%20Grace%20%F0%9F%91%8B%0AI%20just%20visited%20your%20website%20and%20I%27m%20interested%20in%20learning%20more%20about%20your%20services.%20Please%20I%27d%20like%20to%20discuss%20a%20project%20with%20you." 
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block text-white bg-white/10 hover:bg-white/20 px-5 py-2.5 rounded-full transition-all border border-white/10 hover:border-purple-500/50 text-sm font-medium w-full text-center mt-4"
+                onClick={closeMenu}
+              >
+                Let's Talk
+              </Link>
+            </div>
+          </div>
+        )}
       </nav>
 
       <main className="pt-32 pb-20 overflow-hidden">
@@ -102,7 +167,7 @@ export default function Home() {
             </div>
 
             {/* Portrait Image (Right Side) */}
-            <div className="relative group animate-fade-in-right hidden lg:block">
+            <div className="relative group animate-fade-in-right">
               <div className="absolute -inset-4 bg-gradient-to-r from-purple-600 to-pink-600 rounded-[3rem] blur-2xl opacity-20 group-hover:opacity-40 transition-opacity duration-1000"></div>
               <div className="relative aspect-[4/5] rounded-[2.5rem] overflow-hidden border border-white/10 glass-card">
                 <Image 
@@ -508,7 +573,7 @@ export default function Home() {
             </div>
 
             {/* Right Side: Animated Marquee */}
-            <div className="hidden lg:block relative h-[500px] w-full border border-white/5 bg-white/[0.02] backdrop-blur-md rounded-[3rem] overflow-hidden group">
+            <div className="lg:block relative h-[300px] md:h-[400px] lg:h-[500px] w-full border border-white/5 bg-white/[0.02] backdrop-blur-md rounded-[3rem] overflow-hidden group">
                {/* Fading transparent masks at top and bottom */}
                <div className="absolute inset-0 pointer-events-none z-10" style={{ backgroundImage: "linear-gradient(to bottom, #000 0%, transparent 20%, transparent 80%, #000 100%)" }}></div>
                
@@ -625,16 +690,27 @@ export default function Home() {
         <section className="px-6 py-24 relative z-10 border-t border-white/5 bg-black/40 backdrop-blur-sm overflow-hidden">
           {/* Subtle Starry Effect Background */}
           <div className="absolute inset-0 z-0 opacity-20 pointer-events-none">
-            {[...Array(20)].map((_, i) => (
+            {[
+              { top: '10%', left: '20%', size: '3px', delay: '0s' },
+              { top: '30%', left: '60%', size: '2px', delay: '1s' },
+              { top: '50%', left: '10%', size: '4px', delay: '2s' },
+              { top: '70%', left: '90%', size: '2px', delay: '3s' },
+              { top: '85%', left: '40%', size: '3px', delay: '4s' },
+              { top: '15%', left: '75%', size: '2px', delay: '0.5s' },
+              { top: '45%', left: '85%', size: '1px', delay: '1.5s' },
+              { top: '65%', left: '25%', size: '3px', delay: '2.5s' },
+              { top: '25%', left: '35%', size: '2px', delay: '3.5s' },
+              { top: '75%', left: '55%', size: '1px', delay: '4.5s' },
+            ].map((star, i) => (
               <div 
                 key={i}
                 className="absolute bg-white rounded-full animate-pulse"
                 style={{
-                  top: `${Math.random() * 100}%`,
-                  left: `${Math.random() * 100}%`,
-                  width: `${Math.random() * 3}px`,
-                  height: `${Math.random() * 3}px`,
-                  animationDelay: `${Math.random() * 5}s`,
+                  top: star.top,
+                  left: star.left,
+                  width: star.size,
+                  height: star.size,
+                  animationDelay: star.delay,
                 }}
               />
             ))}
@@ -690,7 +766,7 @@ export default function Home() {
         <section id="contact" className="px-6 py-24 relative z-10 border-t border-white/5 bg-black/40 backdrop-blur-sm">
           <div className="max-w-4xl mx-auto text-center glass-card p-12 md:p-20 rounded-[3rem] border border-white/10 relative overflow-hidden">
              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-1/2 bg-gradient-to-b from-purple-500/20 to-transparent blur-3xl -z-10" />
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold font-heading text-white mb-6 tracking-tight leading-tight">Let’s build something that doesn’t just look good — <br className="hidden md:block"/><span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-500">but performs.</span></h2>
+            <h2 className="text-3xl md:text-5xl lg:text-6xl font-bold font-heading text-white mb-6 tracking-tight leading-tight">Let's build something that doesn't just look good — <br className="block md:hidden"/><span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-500">but performs.</span></h2>
             <p className="text-xl text-gray-400 mb-10 max-w-2xl mx-auto leading-relaxed">Ready to scale your brand with a world-class digital experience? Let's discuss your next big objective.</p>
             
             <div className="flex flex-col md:flex-row items-center justify-center gap-6 mb-12">
