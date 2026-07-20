@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Maximize2 } from "lucide-react";
+import { ArrowRight, ExternalLink, Maximize2 } from "lucide-react";
 
 const graphicsCatalogue = [
   {
@@ -65,6 +65,58 @@ const graphicsCatalogue = [
   },
 ];
 
+const webCatalogue = [
+  {
+    id: 1,
+    title: "My Wishs",
+    category: "E-Commerce / Web App",
+    image: "/My wish.png",
+    url: "https://mywishs.netlify.app/",
+  },
+  {
+    id: 2,
+    title: "Code Realm",
+    category: "Tech / Developer Platform",
+    image: "/Code Realm.png",
+    url: "https://coderea.netlify.app/",
+  },
+  {
+    id: 3,
+    title: "Special Dishes Food",
+    category: "Food & Restaurant",
+    image: "/Specialdishes Foods.png",
+    url: "https://specialdishesfood.com/",
+  },
+  {
+    id: 4,
+    title: "Hamilton Properties",
+    category: "Real Estate",
+    image: "/Hamliton Properties.png",
+    url: "https://hpi.ng/",
+  },
+  {
+    id: 5,
+    title: "Sunbridge Consulting",
+    category: "Consulting & Business",
+    image: "/Sunbridge Consulting.png",
+    url: "https://sunbridgeconsulting.com.ng/",
+  },
+  {
+    id: 6,
+    title: "Biokeft",
+    category: "Health & Wellness",
+    image: "/Biokeft.png",
+    url: "https://biokeft.com/",
+  },
+  {
+    id: 7,
+    title: "Emcoders",
+    category: "Tech / Developer Community",
+    image: "/Emcoders.png",
+    url: "https://emcoders.netlify.app/",
+  },
+];
+
 export default function Catalogue() {
   return (
     <div className="min-h-screen bg-black text-[#e5e5e5] font-sans selection:bg-purple-900 selection:text-white relative">
@@ -117,32 +169,95 @@ export default function Catalogue() {
             Creative Portfolio
           </div>
           <h1 className="text-5xl md:text-7xl font-bold font-heading leading-[1.1] tracking-tight text-white drop-shadow-2xl mb-6">
-            Graphic <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-orange-400">Design</span> Catalogue
+            Work <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-orange-400">Catalogue</span>
           </h1>
           <p className="text-lg md:text-xl text-gray-300 max-w-2xl leading-relaxed">
-            A curated collection of brand identities, social media campaigns, UI/UX designs, and marketing assets crafted to elevate modern brands.
+            A curated showcase of websites built for real clients, alongside brand identities, social media campaigns, and marketing assets crafted to elevate modern brands.
           </p>
         </header>
 
-        {/* Masonry-Style Grid for Catalogue */}
+        {/* Web Development Section */}
         <section className="max-w-7xl mx-auto px-6 py-12">
+          <div className="flex flex-col items-start mb-10">
+            <div className="inline-flex items-center justify-center gap-2 px-5 py-1.5 rounded-full border border-purple-500/30 bg-purple-500/10 text-purple-300 text-xs font-semibold tracking-widest uppercase mb-4">
+              Web Development
+            </div>
+            <h2 className="text-3xl md:text-4xl font-bold font-heading text-white">
+              Live <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">Client Websites</span>
+            </h2>
+            <p className="text-gray-400 mt-3 max-w-xl">Real websites built and shipped for clients — click any card to visit the live site.</p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {webCatalogue.map((item) => (
+              <Link
+                key={item.id}
+                href={item.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group relative rounded-3xl overflow-hidden glass-card border border-white/10 hover:border-purple-500/50 transition-all duration-500 hover:-translate-y-2 block"
+              >
+                <div className="aspect-[16/10] relative w-full overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent z-10 opacity-50 group-hover:opacity-80 transition-opacity duration-300" />
+                  <Image
+                    src={item.image}
+                    alt={item.title}
+                    fill
+                    style={{ objectFit: "cover", objectPosition: "top" }}
+                    className="group-hover:scale-105 transition-transform duration-700"
+                    unoptimized
+                  />
+
+                  {/* Live Site Badge */}
+                  <div className="absolute top-4 right-4 z-20 flex items-center gap-1.5 bg-black/60 backdrop-blur-md border border-white/10 text-white text-xs font-semibold px-3 py-1.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
+                    Visit Site
+                    <ExternalLink className="w-3 h-3 ml-0.5" />
+                  </div>
+
+                  {/* Hover Overlay Content */}
+                  <div className="absolute inset-0 z-20 flex flex-col justify-end p-6 translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
+                    <p className="text-purple-400 text-xs font-bold tracking-widest uppercase mb-1.5 drop-shadow-md">{item.category}</p>
+                    <h3 className="text-xl font-bold text-white leading-tight drop-shadow-md">{item.title}</h3>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
+
+        {/* Divider */}
+        <div className="max-w-7xl mx-auto px-6 py-4">
+          <div className="h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+        </div>
+
+        {/* Graphic Design Section */}
+        <section className="max-w-7xl mx-auto px-6 py-12">
+          <div className="flex flex-col items-start mb-10">
+            <div className="inline-flex items-center justify-center gap-2 px-5 py-1.5 rounded-full border border-pink-500/30 bg-pink-500/10 text-pink-300 text-xs font-semibold tracking-widest uppercase mb-4">
+              Graphic Design
+            </div>
+            <h2 className="text-3xl md:text-4xl font-bold font-heading text-white">
+              Brand & <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-orange-400">Design Work</span>
+            </h2>
+            <p className="text-gray-400 mt-3 max-w-xl">Brand identities, social media campaigns, and marketing materials crafted to elevate modern brands.</p>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {graphicsCatalogue.map((item) => (
-              <div 
-                key={item.id} 
+              <div
+                key={item.id}
                 className="group relative rounded-3xl overflow-hidden glass-card border border-white/10 hover:border-pink-500/50 transition-all duration-500 hover:-translate-y-2"
               >
                 <div className="aspect-[4/5] relative w-full overflow-hidden">
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-10 opacity-60 group-hover:opacity-80 transition-opacity duration-300" />
-                  <Image 
-                    src={item.image} 
-                    alt={item.title} 
-                    fill 
-                    style={{ objectFit: "cover" }} 
+                  <Image
+                    src={item.image}
+                    alt={item.title}
+                    fill
+                    style={{ objectFit: "cover" }}
                     className="group-hover:scale-110 transition-transform duration-700"
                     unoptimized
                   />
-                  
+
                   {/* Hover Overlay Content */}
                   <div className="absolute inset-0 z-20 flex flex-col justify-end p-8 translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
                     <div className="w-10 h-10 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center text-white mb-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-100 border border-white/20 hover:bg-pink-500 hover:border-pink-500 cursor-pointer">
