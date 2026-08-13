@@ -49,6 +49,20 @@ export async function GET() {
     );
   }
 
+  if (!validPrefix) {
+    console.error(
+      `[Grace AI] Health check: OPENROUTER_API_KEY is invalid | length: ${key.length} | validPrefix: false`,
+    );
+    return Response.json(
+      {
+        ...base,
+        status: 'misconfigured',
+        error: `OPENROUTER_API_KEY in Netlify dashboard is invalid (length ${key.length}). OpenRouter API keys must start with 'sk-or-v1-'.`,
+      },
+      { status: 503 },
+    );
+  }
+
   // Make a minimal test request to OpenRouter to verify connectivity and auth.
   const startMs = Date.now();
   try {

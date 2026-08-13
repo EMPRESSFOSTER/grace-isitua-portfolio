@@ -34,6 +34,16 @@ export class OpenRouterProvider implements AIProvider {
       console.error('[Grace AI] OPENROUTER_API_KEY is missing at runtime');
       throw new Error('OPENROUTER_API_KEY environment variable is not set');
     }
+
+    if (!key.startsWith('sk-or-v1-')) {
+      console.error(
+        `[Grace AI] INVALID OPENROUTER_API_KEY format | length: ${key.length} | validPrefix: false\n` +
+          `  OpenRouter API keys must start with 'sk-or-v1-'.\n` +
+          `  The value currently set in Netlify environment variables appears to be a 366-character key from another service (e.g. Supabase JWT).\n` +
+          `  Please update OPENROUTER_API_KEY in Netlify Dashboard → Site Settings → Environment Variables.`,
+      );
+    }
+
     this.apiKey = key;
     this.model = DEFAULT_MODEL;
     // Correct production URL — no hyphen before ".netlify"
