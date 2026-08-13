@@ -17,11 +17,14 @@ const FRIENDLY_ERROR =
   "Sorry, I'm having a little trouble connecting right now. Please use the contact options below and Grace will get back to you shortly.";
 
 export async function POST(req: NextRequest) {
+  const requestStartMs = Date.now();
+
   // ── 1. Rate Limiting ──────────────────────────────────────────────────────
   const ip = getClientIp(req);
   const rateResult = checkRateLimit(ip, 'chat');
 
   if (!rateResult.allowed) {
+    console.warn(`[Grace AI] Rate limit hit | ip_hash: ${hashIp(ip)}`);
     return Response.json(
       {
         error: "You're sending messages a little quickly. Please wait a moment and try again.",
@@ -70,8 +73,15 @@ export async function POST(req: NextRequest) {
 
   // ── 6. Call AI Provider (Streaming) ──────────────────────────────────────
   try {
+    console.log(
+      `[Grace AI] Request started | provider: openrouter | messages: ${messages.length}`,
+    );
+
     const provider = getAIProvider();
     const stream = await provider.chatStream({ messages });
+
+    const durationMs = Date.now() - requestStartMs;
+    console.log(`[Grace AI] Stream started | ${durationMs}ms`);
 
     // Log analytics event (fire and forget — don't block response)
     insertAnalyticsEvent({
@@ -92,20 +102,56 @@ export async function POST(req: NextRequest) {
     });
   } catch (error) {
     // ── 7. Graceful Error Handling ────────────────────────────────────────
+    const durationMs = Date.now() - requestStartMs;
+
     if (error instanceof AIProviderError) {
-      console.error(`[Grace AI] Provider error [${error.code}]:`, error.message);
+      // Structured log — enough for Netlify logs to diagnose the failure
+      console.error(
+        `[Grace AI] Provider error | code: ${error.code} | ${durationMs}ms\n` +
+          `  message: ${error.message}`,
+      );
 
       if (error.code === 'rate_limit') {
         return Response.json(
-          { error: "The AI service is a little busy right now. Please try again in a moment.", code: 'provider_rate_limit' },
-          { status: 503 }
+          {
+            error: 'The AI service is a little busy right now. Please try again in a moment.',
+            code: 'provider_rate_limit',
+          },
+          { status: 503 },
+        );
+      }
+
+      if (error.code === 'quota') {
+        return Response.json(
+          { error: FRIENDLY_ERROR, code: 'quota' },
+          { status: 503 },
+        );
+      }
+
+      if (error.code === 'timeout') {
+        return Response.json(
+          { error: FRIENDLY_ERROR, code: 'timeout' },
+          { status: 503 },
         );
       }
 
       return Response.json({ error: FRIENDLY_ERROR, code: error.code }, { status: 503 });
     }
 
-    console.error('[Grace AI] Unexpected chat error:', error);
+    // Catch provider constructor errors (e.g. missing API key)
+    if (error instanceof Error && error.message.includes('OPENROUTER_API_KEY')) {
+      console.error(
+        `[Grace AI] FATAL: OPENROUTER_API_KEY is missing from the environment.\n` +
+          `  Set it in Netlify Dashboard → Site Settings → Environment Variables.\n` +
+          `  Duration: ${durationMs}ms`,
+      );
+      return Response.json({ error: FRIENDLY_ERROR, code: 'misconfigured' }, { status: 503 });
+    }
+
+    console.error(
+      `[Grace AI] Unexpected error | ${durationMs}ms\n`,
+      error,
+    );
     return Response.json({ error: FRIENDLY_ERROR, code: 'internal_error' }, { status: 500 });
   }
 }
