@@ -19,7 +19,11 @@ interface HealthResult {
 }
 
 export async function GET() {
-  const model = process.env.OPENROUTER_MODEL || 'openrouter/free';
+  const envModel = process.env.OPENROUTER_MODEL;
+  const model =
+    envModel && envModel !== 'openrouter/free'
+      ? envModel
+      : 'google/gemma-4-26b-a4b-it:free';
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://graceisitua.netlify.app';
   const rawKey = process.env.OPENROUTER_API_KEY;
   const key = rawKey ? rawKey.trim().replace(/^["']|["']$/g, '').trim() : '';

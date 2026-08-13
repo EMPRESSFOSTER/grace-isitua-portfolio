@@ -6,9 +6,18 @@ import type { AIProvider, ChatRequest, ChatResponse } from './types';
 
 const OPENROUTER_BASE_URL = 'https://openrouter.ai/api/v1';
 
-// Default to 'openrouter/free' — the free routing tier.
-// Never fall back to 'openrouter/auto' which routes to paid models.
-const DEFAULT_MODEL = process.env.OPENROUTER_MODEL || 'openrouter/free';
+// Curated list of reliable conversational free models on OpenRouter
+// (avoiding content-safety classifier models like nemotron-3.5-content-safety)
+export const DEFAULT_FREE_MODELS = [
+  'google/gemma-4-26b-a4b-it:free',
+  'nvidia/nemotron-3.5-lightning:free',
+  'openai/gpt-oss-20b:free',
+  'nvidia/nemotron-3-nano-30b-a3b:free',
+];
+
+const envModel = process.env.OPENROUTER_MODEL;
+const DEFAULT_MODEL =
+  envModel && envModel !== 'openrouter/free' ? envModel : DEFAULT_FREE_MODELS[0];
 
 const REQUEST_TIMEOUT_MS = 30_000;
 
@@ -27,7 +36,7 @@ export class OpenRouterProvider implements AIProvider {
     const hasSiteUrl = Boolean(process.env.NEXT_PUBLIC_SITE_URL);
 
     console.log(`[Grace AI] OPENROUTER_API_KEY configured: ${hasKey} | length: ${key.length} | validPrefix: ${key.startsWith('sk-or-v1-')}`);
-    console.log(`[Grace AI] OPENROUTER_MODEL configured: ${hasModel}`);
+    console.log(`[Grace AI] OPENROUTER_MODEL configured: ${hasModel} (effective: ${DEFAULT_MODEL})`);
     console.log(`[Grace AI] NEXT_PUBLIC_SITE_URL configured: ${hasSiteUrl}`);
 
     if (!hasKey) {
@@ -133,215 +142,219 @@ export class OpenRouterProvider implements AIProvider {
 
   // ── Non-streaming chat ────────────────────────────────────────────────────
   async chat(request: ChatRequest): Promise<ChatResponse> {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
     const startMs = Date.now();
+    const candidateModels = request.model
+      ? [request.model]
+      : [this.model, ...DEFAULT_FREE_MODELS.filter((m) => m !== this.model)];
 
-    console.log(`[Grace AI] Provider: openrouter | Model: ${request.model || this.model} | Calling OpenRouter (sync)`);
+    let lastError: unknown = null;
 
-    try {
-      const response = await fetch(`${OPENROUTER_BASE_URL}/chat/completions`, {
-        method: 'POST',
-        headers: this.buildHeaders(),
-        body: JSON.stringify({
-          model: request.model || this.model,
-          messages: request.messages,
-          temperature: request.temperature ?? 0.7,
-          max_tokens: request.maxTokens ?? 1024,
-          stream: false,
-        }),
-        signal: controller.signal,
-      });
+    for (const model of candidateModels) {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
 
-      clearTimeout(timeoutId);
-      const durationMs = Date.now() - startMs;
+      console.log(`[Grace AI] Provider: openrouter | Model: ${model} | Calling OpenRouter (sync)`);
 
-      console.log(`[Grace AI] OpenRouter response status: ${response.status} | ${durationMs}ms`);
+      try {
+        const response = await fetch(`${OPENROUTER_BASE_URL}/chat/completions`, {
+          method: 'POST',
+          headers: this.buildHeaders(),
+          body: JSON.stringify({
+            model,
+            messages: request.messages,
+            temperature: request.temperature ?? 0.7,
+            max_tokens: request.maxTokens ?? 1024,
+            stream: false,
+          }),
+          signal: controller.signal,
+        });
 
-      if (!response.ok) {
-        const body = await this.safeReadErrorBody(response);
-        throw this.mapStatusToError(response.status, body, 'chat()');
-      }
-
-      const data = await response.json();
-
-      const content = data?.choices?.[0]?.message?.content;
-      if (!content) {
-        console.error('[Grace AI] chat() — malformed response: no content in choices[0].message.content');
-        throw new AIProviderError('malformed_response', 'No content in response');
-      }
-
-      console.log(`[Grace AI] chat() complete | ${durationMs}ms | model: ${data.model || this.model}`);
-
-      return {
-        content,
-        model: data.model || this.model,
-        usage: data.usage
-          ? {
-              promptTokens: data.usage.prompt_tokens,
-              completionTokens: data.usage.completion_tokens,
-              totalTokens: data.usage.total_tokens,
-            }
-          : undefined,
-      };
-    } catch (error) {
-      clearTimeout(timeoutId);
-      if (error instanceof AIProviderError) throw error;
-      if (error instanceof Error && error.name === 'AbortError') {
+        clearTimeout(timeoutId);
         const durationMs = Date.now() - startMs;
-        console.error(`[Grace AI] chat() timed out after ${durationMs}ms | model: ${this.model}`);
-        throw new AIProviderError('timeout', 'Request timed out after 30s');
+        console.log(`[Grace AI] OpenRouter response status: ${response.status} | model: ${model} | ${durationMs}ms`);
+
+        if (!response.ok) {
+          const body = await this.safeReadErrorBody(response);
+          lastError = this.mapStatusToError(response.status, body, `chat() [${model}]`);
+          console.warn(`[Grace AI] Model ${model} failed (${response.status}) — trying next candidate...`);
+          continue;
+        }
+
+        const data = await response.json();
+        const content = data?.choices?.[0]?.message?.content;
+
+        if (!content || content.includes('User Safety: safe')) {
+          console.warn(`[Grace AI] Model ${model} returned invalid or safety-only output — trying next candidate...`);
+          continue;
+        }
+
+        console.log(`[Grace AI] chat() complete | ${durationMs}ms | model: ${data.model || model}`);
+
+        return {
+          content,
+          model: data.model || model,
+          usage: data.usage
+            ? {
+                promptTokens: data.usage.prompt_tokens,
+                completionTokens: data.usage.completion_tokens,
+                totalTokens: data.usage.total_tokens,
+              }
+            : undefined,
+        };
+      } catch (error) {
+        clearTimeout(timeoutId);
+        lastError = error;
+        console.warn(`[Grace AI] Model ${model} network error:`, error instanceof Error ? error.message : String(error));
       }
-      console.error('[Grace AI] chat() network error:', error instanceof Error ? error.message : String(error));
-      throw new AIProviderError('network_error', 'Network error connecting to OpenRouter');
     }
+
+    if (lastError instanceof AIProviderError) throw lastError;
+    throw new AIProviderError('network_error', 'All OpenRouter candidate models failed or were unavailable');
   }
 
   // ── Streaming chat ────────────────────────────────────────────────────────
   async chatStream(request: ChatRequest): Promise<ReadableStream<Uint8Array>> {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
     const startMs = Date.now();
-    const model = request.model || this.model;
+    const candidateModels = request.model
+      ? [request.model]
+      : [this.model, ...DEFAULT_FREE_MODELS.filter((m) => m !== this.model)];
 
-    console.log(`[Grace AI] Provider: openrouter | Model: ${model} | Calling OpenRouter (stream)`);
+    let lastError: unknown = null;
 
-    let response: Response;
-    try {
-      response = await fetch(`${OPENROUTER_BASE_URL}/chat/completions`, {
-        method: 'POST',
-        headers: this.buildHeaders(),
-        body: JSON.stringify({
-          model,
-          messages: request.messages,
-          temperature: request.temperature ?? 0.7,
-          max_tokens: request.maxTokens ?? 1024,
-          stream: true,
-        }),
-        signal: controller.signal,
-      });
-    } catch (fetchError) {
-      clearTimeout(timeoutId);
-      if (fetchError instanceof Error && fetchError.name === 'AbortError') {
+    for (const model of candidateModels) {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+
+      console.log(`[Grace AI] Provider: openrouter | Model: ${model} | Calling OpenRouter (stream)`);
+
+      try {
+        const response = await fetch(`${OPENROUTER_BASE_URL}/chat/completions`, {
+          method: 'POST',
+          headers: this.buildHeaders(),
+          body: JSON.stringify({
+            model,
+            messages: request.messages,
+            temperature: request.temperature ?? 0.7,
+            max_tokens: request.maxTokens ?? 1024,
+            stream: true,
+          }),
+          signal: controller.signal,
+        });
+
+        clearTimeout(timeoutId);
         const durationMs = Date.now() - startMs;
-        console.error(`[Grace AI] chatStream() fetch timed out after ${durationMs}ms | model: ${model}`);
-        throw new AIProviderError('timeout', 'Request timed out after 30s');
-      }
-      console.error(
-        '[Grace AI] chatStream() network/fetch error:',
-        fetchError instanceof Error ? fetchError.message : String(fetchError),
-      );
-      throw new AIProviderError('network_error', 'Network error connecting to OpenRouter');
-    }
+        console.log(`[Grace AI] OpenRouter stream response status: ${response.status} | model: ${model} | ${durationMs}ms`);
 
-    clearTimeout(timeoutId);
-    const durationMs = Date.now() - startMs;
-
-    console.log(`[Grace AI] OpenRouter response status: ${response.status} | ${durationMs}ms`);
-
-    if (!response.ok) {
-      const body = await this.safeReadErrorBody(response);
-      throw this.mapStatusToError(response.status, body, 'chatStream()');
-    }
-
-    if (!response.body) {
-      console.error('[Grace AI] chatStream() — response.body is null (no streaming body)');
-      throw new AIProviderError('malformed_response', 'No response body for streaming');
-    }
-
-    console.log(`[Grace AI] chatStream() connection established | ${durationMs}ms | model: ${model} | streaming started`);
-
-    const encoder = new TextEncoder();
-    const decoder = new TextDecoder();
-
-    return new ReadableStream<Uint8Array>({
-      async start(streamController) {
-        const reader = response.body!.getReader();
-        // Buffer accumulates partial SSE data across network chunks.
-        // An SSE payload can be split mid-line across two fetch chunks,
-        // e.g. chunk1: 'data: {"choices":[{"delta":{"con'
-        //      chunk2: 'tent":"Hello"}}]}\n\n'
-        // Without buffering, JSON.parse() fails and the token is silently lost.
-        let buffer = '';
-
-        try {
-          while (true) {
-            const { done, value } = await reader.read();
-            if (done) break;
-
-            buffer += decoder.decode(value, { stream: true });
-
-            // Process all complete SSE messages in the buffer.
-            // SSE messages are delimited by '\n\n' or '\r\n\r\n'.
-            while (true) {
-              const idxNn = buffer.indexOf('\n\n');
-              const idxRnRn = buffer.indexOf('\r\n\r\n');
-
-              if (idxNn === -1 && idxRnRn === -1) break;
-
-              let boundary: number;
-              let delimLen: number;
-
-              if (idxNn !== -1 && (idxRnRn === -1 || idxNn < idxRnRn)) {
-                boundary = idxNn;
-                delimLen = 2;
-              } else {
-                boundary = idxRnRn;
-                delimLen = 4;
-              }
-
-              const message = buffer.slice(0, boundary);
-              buffer = buffer.slice(boundary + delimLen);
-
-              for (const line of message.split(/\r?\n/)) {
-                const trimmed = line.trim();
-                if (!trimmed.startsWith('data:')) continue;
-
-                const data = trimmed.slice(5).trim();
-                if (data === '[DONE]') {
-                  streamController.close();
-                  return;
-                }
-
-                try {
-                  const parsed = JSON.parse(data);
-                  const delta = parsed?.choices?.[0]?.delta?.content;
-                  if (delta) {
-                    streamController.enqueue(encoder.encode(delta));
-                  }
-                } catch {
-                  // Malformed JSON in a single SSE line — skip it.
-                }
-              }
-            }
-          }
-
-          // Flush any remaining buffer content (stream ended without [DONE])
-          if (buffer.trim()) {
-            for (const line of buffer.split(/\r?\n/)) {
-              const trimmed = line.trim();
-              if (!trimmed.startsWith('data:')) continue;
-              const data = trimmed.slice(5).trim();
-              if (data === '[DONE]') break;
-              try {
-                const parsed = JSON.parse(data);
-                const delta = parsed?.choices?.[0]?.delta?.content;
-                if (delta) streamController.enqueue(encoder.encode(delta));
-              } catch {
-                // ignore
-              }
-            }
-          }
-
-          streamController.close();
-        } catch (error) {
-          console.error('[Grace AI] chatStream() read error:', error instanceof Error ? error.message : String(error));
-          streamController.error(error);
-        } finally {
-          reader.releaseLock();
+        if (!response.ok) {
+          const body = await this.safeReadErrorBody(response);
+          lastError = this.mapStatusToError(response.status, body, `chatStream() [${model}]`);
+          console.warn(`[Grace AI] Stream for model ${model} failed (${response.status}) — trying next candidate...`);
+          continue;
         }
-      },
-    });
+
+        if (!response.body) {
+          console.warn(`[Grace AI] Model ${model} returned empty body — trying next candidate...`);
+          continue;
+        }
+
+        console.log(`[Grace AI] chatStream() connection established | ${durationMs}ms | model: ${model} | streaming started`);
+
+        const encoder = new TextEncoder();
+        const decoder = new TextDecoder();
+
+        return new ReadableStream<Uint8Array>({
+          async start(streamController) {
+            const reader = response.body!.getReader();
+            let buffer = '';
+
+            try {
+              while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+
+                buffer += decoder.decode(value, { stream: true });
+
+                while (true) {
+                  const idxNn = buffer.indexOf('\n\n');
+                  const idxRnRn = buffer.indexOf('\r\n\r\n');
+
+                  if (idxNn === -1 && idxRnRn === -1) break;
+
+                  let boundary: number;
+                  let delimLen: number;
+
+                  if (idxNn !== -1 && (idxRnRn === -1 || idxNn < idxRnRn)) {
+                    boundary = idxNn;
+                    delimLen = 2;
+                  } else {
+                    boundary = idxRnRn;
+                    delimLen = 4;
+                  }
+
+                  const message = buffer.slice(0, boundary);
+                  buffer = buffer.slice(boundary + delimLen);
+
+                  for (const line of message.split(/\r?\n/)) {
+                    const trimmed = line.trim();
+                    if (!trimmed.startsWith('data:')) continue;
+
+                    const data = trimmed.slice(5).trim();
+                    if (data === '[DONE]') {
+                      streamController.close();
+                      return;
+                    }
+
+                    try {
+                      const parsed = JSON.parse(data);
+                      const delta = parsed?.choices?.[0]?.delta?.content;
+                      // Filter out safety-classifier noise
+                      if (delta && !delta.includes('User Safety:') && !delta.includes('Response Safety:')) {
+                        streamController.enqueue(encoder.encode(delta));
+                      }
+                    } catch {
+                      // Skip invalid SSE line
+                    }
+                  }
+                }
+              }
+
+              // Flush any remaining buffer content
+              if (buffer.trim()) {
+                for (const line of buffer.split(/\r?\n/)) {
+                  const trimmed = line.trim();
+                  if (!trimmed.startsWith('data:')) continue;
+                  const data = trimmed.slice(5).trim();
+                  if (data === '[DONE]') break;
+                  try {
+                    const parsed = JSON.parse(data);
+                    const delta = parsed?.choices?.[0]?.delta?.content;
+                    if (delta && !delta.includes('User Safety:') && !delta.includes('Response Safety:')) {
+                      streamController.enqueue(encoder.encode(delta));
+                    }
+                  } catch {
+                    // ignore
+                  }
+                }
+              }
+
+              streamController.close();
+            } catch (error) {
+              console.error('[Grace AI] chatStream() read error:', error instanceof Error ? error.message : String(error));
+              streamController.error(error);
+            } finally {
+              reader.releaseLock();
+            }
+          },
+        });
+      } catch (fetchError) {
+        clearTimeout(timeoutId);
+        lastError = fetchError;
+        console.warn(`[Grace AI] Stream for model ${model} network error:`, fetchError instanceof Error ? fetchError.message : String(fetchError));
+      }
+    }
+
+    if (lastError instanceof AIProviderError) throw lastError;
+    throw new AIProviderError('network_error', 'All OpenRouter candidate models failed to stream');
   }
 }
 
