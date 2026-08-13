@@ -18,16 +18,19 @@ export class OpenRouterProvider implements AIProvider {
   private readonly siteUrl: string;
 
   constructor() {
-    const key = process.env.OPENROUTER_API_KEY;
-    const hasKey = Boolean(key);
+    const rawKey = process.env.OPENROUTER_API_KEY;
+    const hasRawKey = Boolean(rawKey);
+    const key = rawKey ? rawKey.trim().replace(/^["']|["']$/g, '').trim() : '';
+
+    const hasKey = key.length > 0;
     const hasModel = Boolean(process.env.OPENROUTER_MODEL);
     const hasSiteUrl = Boolean(process.env.NEXT_PUBLIC_SITE_URL);
 
-    console.log(`[Grace AI] OPENROUTER_API_KEY configured: ${hasKey}`);
+    console.log(`[Grace AI] OPENROUTER_API_KEY configured: ${hasKey} | length: ${key.length} | validPrefix: ${key.startsWith('sk-or-v1-')}`);
     console.log(`[Grace AI] OPENROUTER_MODEL configured: ${hasModel}`);
     console.log(`[Grace AI] NEXT_PUBLIC_SITE_URL configured: ${hasSiteUrl}`);
 
-    if (!key) {
+    if (!hasKey) {
       console.error('[Grace AI] OPENROUTER_API_KEY is missing at runtime');
       throw new Error('OPENROUTER_API_KEY environment variable is not set');
     }

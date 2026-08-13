@@ -22,12 +22,15 @@ export async function POST(req: NextRequest) {
   console.log('[Grace AI] API route start | POST /api/ai/chat');
 
   // ── 0. Runtime Environment Verification ──────────────────────────────────
-  const hasKey = Boolean(process.env.OPENROUTER_API_KEY);
+  const rawKey = process.env.OPENROUTER_API_KEY;
+  const key = rawKey ? rawKey.trim().replace(/^["']|["']$/g, '').trim() : '';
+
+  const hasKey = key.length > 0;
   const hasModel = Boolean(process.env.OPENROUTER_MODEL);
   const hasSiteUrl = Boolean(process.env.NEXT_PUBLIC_SITE_URL);
 
   console.log(
-    `[Grace AI] OPENROUTER_API_KEY configured: ${hasKey}\n` +
+    `[Grace AI] OPENROUTER_API_KEY configured: ${hasKey} | length: ${key.length} | validPrefix: ${key.startsWith('sk-or-v1-')}\n` +
       `[Grace AI] OPENROUTER_MODEL configured: ${hasModel}\n` +
       `[Grace AI] NEXT_PUBLIC_SITE_URL configured: ${hasSiteUrl}`,
   );

@@ -21,11 +21,21 @@ interface HealthResult {
 export async function GET() {
   const model = process.env.OPENROUTER_MODEL || 'openrouter/free';
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://graceisitua.netlify.app';
-  const hasKey = Boolean(process.env.OPENROUTER_API_KEY);
+  const rawKey = process.env.OPENROUTER_API_KEY;
+  const key = rawKey ? rawKey.trim().replace(/^["']|["']$/g, '').trim() : '';
 
-  const base: Omit<HealthResult, 'status'> = {
+  const hasKey = key.length > 0;
+  const validPrefix = key.startsWith('sk-or-v1-');
+  const hasQuotes = Boolean(rawKey && (rawKey.startsWith('"') || rawKey.startsWith("'")));
+  const hasWhitespace = Boolean(rawKey && rawKey !== rawKey.trim());
+
+  const base = {
     provider: 'openrouter',
     configured: hasKey,
+    keyLength: key.length,
+    validPrefix,
+    hasQuotes,
+    hasWhitespace,
     model,
     siteUrl,
     checkedAt: new Date().toISOString(),
@@ -34,7 +44,7 @@ export async function GET() {
   if (!hasKey) {
     console.error('[Grace AI] Health check: OPENROUTER_API_KEY is not configured');
     return Response.json(
-      { ...base, status: 'misconfigured', error: 'OPENROUTER_API_KEY is not set' } satisfies HealthResult,
+      { ...base, status: 'misconfigured', error: 'OPENROUTER_API_KEY is not set' },
       { status: 503 },
     );
   }
@@ -45,7 +55,7 @@ export async function GET() {
     const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
       headers: {
-        Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
+        Authorization: `Bearer ${key}`,
         'Content-Type': 'application/json',
         'HTTP-Referer': siteUrl,
         'X-Title': 'Grace AI - Health Check',
