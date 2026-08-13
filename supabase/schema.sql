@@ -8,11 +8,13 @@
 create table if not exists public.leads (
   id uuid primary key default gen_random_uuid(),
   name text not null,
-  email text, -- optional (email OR phone required)
+  email text,                          -- optional (email OR phone required)
   company text,
   phone text,
   service text,
+  project_type text,                   -- e.g. E-commerce, Landing Page, Business Website
   project_description text,
+  features text,                       -- comma-separated list of requested features
   budget text,
   timeline text,
   source text not null default 'ai_assistant',
@@ -173,3 +175,19 @@ create policy "quote_requests_select_service_role"
   for select
   to service_role
   using (true);
+
+-- ─────────────────────────────────────────────────────────
+-- MIGRATION: Run these if the database already exists
+-- (schema above uses CREATE TABLE IF NOT EXISTS, so it
+--  won't re-create tables — run the ALTER statements below
+--  in Supabase SQL Editor to patch an existing database)
+-- ─────────────────────────────────────────────────────────
+
+-- 1. Make email nullable (was NOT NULL in older schema versions)
+alter table public.leads alter column email drop not null;
+
+-- 2. Add project_type column (missing from original schema)
+alter table public.leads add column if not exists project_type text;
+
+-- 3. Add features column (missing from original schema)
+alter table public.leads add column if not exists features text;
