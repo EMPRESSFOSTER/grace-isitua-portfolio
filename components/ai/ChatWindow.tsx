@@ -67,7 +67,7 @@ export function ChatWindow({ onClose }: ChatWindowProps) {
 
   const getHistory = useCallback(() => {
     return messages
-      .filter((m) => m.id !== 'welcome' && !m.isError)
+      .filter((m) => m.id !== 'welcome' && !m.isError && m.content.trim().length > 0)
       .slice(-10)
       .map((m) => ({ role: m.role, content: m.content }));
   }, [messages]);
