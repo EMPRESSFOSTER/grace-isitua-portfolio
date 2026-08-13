@@ -1,69 +1,46 @@
-# Grace Isitua — Skills & Technology Stack
+# Grace Isitua — Skills & Tech Stack
 
-## Programming Languages
-- JavaScript (primary)
-- TypeScript (primary)
-- HTML5
-- CSS3
-- Python
-- SQL
-- PHP (mentioned in about page)
+## Frontend Development
+- **Languages**: JavaScript (ES6+), TypeScript, HTML5, CSS3
+- **Frameworks & Libraries**: React.js, Next.js, Vue.js (basic), React Native (basic)
+- **Styling**: Tailwind CSS, SASS/SCSS, Framer Motion, shadcn/ui, Bootstrap
+- **State Management**: Redux Toolkit, Zustand, React Context API
+- **Testing**: Jest, Playwright, React Testing Library
 
-## Frontend Frameworks & Libraries
-- React (primary)
-- Next.js (primary)
-- Vue.js
-- React Native
+## AI & Modern Web
+- AI Platform Interface Development
+- AI Dashboard & Analytics UI
+- OpenAI API Integration
+- Real-Time Data Interfaces (WebSockets)
+- REST API & GraphQL Integration
 
-## Styling & UI
-- Tailwind CSS (primary)
-- SASS/SCSS
-- Styled Components
-- shadcn/ui
-- Framer Motion
+## UI/UX Design
+- Figma (Wireframing, Prototyping, Design Systems)
+- High-fidelity mockups and interactive prototypes
+- Design system creation and component libraries
+- Mobile-first responsive design
 
-## State Management & Data
-- React Query (TanStack Query)
-- Zustand
-- Redux
-- Zod (schema validation)
-
-## Design Tools
-- Figma (primary design tool)
-- Storybook
-- Adobe Photoshop
-- Adobe Illustrator
-- Canva
-
-## Testing & Developer Tools
+## Tools & Workflow
 - Git & GitHub
-- Jest
-- Playwright
-- ESLint
-- Vite
+- VS Code
+- Postman (API testing)
+- Storybook
+- Docker (Basic)
+- CI/CD Workflows
 
-## Backend & Databases
-- Node.js
-- PostgreSQL
-- Firebase
-- Supabase
+## Deployment & Backend
+- Vercel, Netlify, Firebase, Supabase, PostgreSQL
+- Node.js (basic), PHP (basic), Python (basic)
 
-## Deployment & Cloud
-- Netlify (primary deployment platform)
-- Vercel
+## Performance & Quality
+- Core Web Vitals optimization
+- Lazy loading, code splitting, image optimization
+- Accessibility (WCAG standards)
+- SEO-ready markup and technical SEO audits
+- Cross-browser compatibility testing
 
-## Marketing & Digital
-- SEO (technical and on-page)
-- Digital Marketing
-- Social Media Management
-- UX/UI Design
-
-## Core Competencies (from portfolio)
-### Design Thinking
-Bridge the gap between design and engineering. Every pixel is intentional — spacing, typography, color, and motion all work together.
-
-### Performance-First Mindset
-Lazy loading, code splitting, optimized rendering, Core Web Vitals — treats performance as a feature, not an afterthought.
-
-### Component-Driven Architecture
-Builds UIs as reusable, testable component systems. Every project is structured for scalability so teams can grow the codebase without friction.
+## Soft Skills
+- Client communication and project management
+- Agile/iterative workflow
+- Mentoring junior developers
+- Team collaboration with designers, backend engineers, and product managers

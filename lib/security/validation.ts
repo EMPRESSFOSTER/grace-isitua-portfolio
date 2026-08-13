@@ -34,31 +34,28 @@ export const LeadSchema = z.object({
     .email('Please enter a valid email address')
     .max(200)
     .toLowerCase()
-    .trim(),
-  company: z.string().max(200).trim().optional(),
-  phone: z.string().max(30).trim().optional(),
-  service: z
-    .enum([
-      'Frontend Development',
-      'UI/UX Design',
-      'Web Performance',
-      'Tech Education',
-      'Brand Identity',
-      'Other',
-    ])
-    .optional(),
-  projectDescription: z
-    .string()
-    .max(2000, 'Project description is too long')
     .trim()
     .optional(),
-  budget: z.string().max(100).trim().optional(),
-  timeline: z.string().max(100).trim().optional(),
+  company: z.string().max(200).trim().optional(),
+  phone: z.string().max(50).trim().optional(),
+  service: z.string().max(200).trim().optional(),
+  project_type: z.string().max(200).trim().optional(),
+  projectDescription: z
+    .string()
+    .max(3000, 'Project description is too long')
+    .trim()
+    .optional(),
+  features: z.string().max(1000).trim().optional(),
+  budget: z.string().max(200).trim().optional(),
+  timeline: z.string().max(200).trim().optional(),
   source: z
     .enum(['ai_assistant', 'contact_form', 'cv_download', 'direct'])
     .default('ai_assistant'),
   conversationId: z.string().uuid().optional(),
-});
+}).refine(
+  (data) => data.email || data.phone,
+  { message: 'Please provide either an email address or phone/WhatsApp number' }
+);
 
 export type ValidatedLead = z.infer<typeof LeadSchema>;
 

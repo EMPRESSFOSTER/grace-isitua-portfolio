@@ -1,105 +1,88 @@
-# Grace Isitua — Portfolio Projects
+# Grace Isitua — Verified Projects & Portfolio
 
-## Web Development Projects
-
-### Shoppadi E-commerce Suite
-- **Category**: E-Commerce Solution
-- **Description**: A powerful platform allowing businesses to build online stores in minutes. Features a high-converting store builder, custom domains, and integrated payment systems designed for the African market.
-- **Technologies**: Next.js, Tailwind CSS, PostgreSQL, React
-- **Image**: /shoppadi.png
-- **Live URL**: (Not publicly listed — this is a case study project)
-- **Status**: Featured case study
+## 1. Hotel Arex
+- **URL**: https://hotelarex.com/
+- **Type**: Hospitality website
+- **Description**: Designed and developed a modern hotel booking and hospitality website with intuitive UI/UX design, responsive layout, and visual appeal.
+- **Tech**: Frontend development, responsive design
 
 ---
 
-### Sunbridge Consulting
-- **Category**: Financial & Business Growth / Consulting
-- **Description**: A modern, high-converting digital platform empowering MSMEs to achieve sustainable growth. Features a dynamic layout helping businesses build strong financial systems, achieve compliance, and access funding across Africa.
-- **Technologies**: Next.js, Tailwind CSS, React, Figma
-- **Image**: /sunbridge-placeholder.png
-- **Live URL**: https://sunbridgeconsulting.com.ng/
-- **Status**: Live client website
+## 2. Shoppadi E-commerce Suite
+- **URL**: https://shoppadi.com/
+- **Type**: E-commerce platform
+- **Description**: Developed scalable frontend pages for an eCommerce platform with an optimized shopping experience.
+- **Tech**: Next.js, Tailwind CSS, PostgreSQL, React
 
 ---
 
-### My Wishs
-- **Category**: E-Commerce / Web App
-- **Description**: A wishlist and gifting web application.
-- **Technologies**: Web technologies
-- **Image**: /My wish.png
-- **Live URL**: https://mywishs.netlify.app/
-- **Status**: Live
+## 3. EllaBell Hotel and Suites
+- **URL**: https://ellabellhotelandsuites.com/
+- **Type**: Hospitality / Hotel website
+- **Description**: Built a modern hospitality website focused on performance, booking interfaces, and visual appeal.
+- **Tech**: Frontend development, responsive design
 
 ---
 
-### Code Realm
-- **Category**: Tech / Developer Platform
-- **Description**: A tech and developer community platform.
-- **Technologies**: Web technologies
-- **Image**: /Code Realm.png
-- **Live URL**: https://coderea.netlify.app/
-- **Status**: Live
+## 4. Genis Graphics
+- **Type**: Design agency web project
+- **Description**: Developed agency web interfaces, branding-focused digital experiences, and reusable frontend components.
 
 ---
 
-### Special Dishes Food
-- **Category**: Food & Restaurant
-- **Description**: A food and restaurant website for a food business.
-- **Technologies**: Web technologies
-- **Image**: /Specialdishes Foods.png
-- **Live URL**: https://specialdishesfood.com/
-- **Status**: Live client website
+## 5. Sunbridge Consulting
+- **Type**: Corporate / Consulting website
+- **Description**: Designed and developed a professional consulting firm website with clean UI and strong brand identity.
+- **Tech**: Next.js, Tailwind CSS, React, Figma
 
 ---
 
-### Hamilton Properties
-- **Category**: Real Estate
-- **Description**: A real estate platform for a property company.
-- **Technologies**: Web technologies
-- **Image**: /Hamliton Properties.png
-- **Live URL**: https://hpi.ng/
-- **Status**: Live client website
+## 6. Hamilton Properties — hpi.ng
+- **URL**: https://hpi.ng/
+- **Type**: Real estate website
+- **Description**: Built a real estate platform for Hamilton Properties showcasing property listings and company information.
 
 ---
 
-### Biokeft
-- **Category**: Health & Wellness
-- **Description**: A health and wellness website.
-- **Technologies**: Web technologies
-- **Image**: /Biokeft.png
-- **Live URL**: https://biokeft.com/
-- **Status**: Live client website
+## 7. Biokeft — biokeft.com
+- **URL**: https://biokeft.com/
+- **Type**: Health & wellness / E-commerce
+- **Description**: Developed a clean, product-focused website for a health and wellness brand.
 
 ---
 
-### Emcoders
-- **Category**: Tech / Developer Community
-- **Description**: A tech developer community platform.
-- **Technologies**: Web technologies
-- **Image**: /Emcoders.png
-- **Live URL**: https://emcoders.netlify.app/
-- **Status**: Live
+## 8. Special Dishes Food — specialdishesfood.com
+- **URL**: https://specialdishesfood.com/
+- **Type**: Food & restaurant website
+- **Description**: Designed and built a restaurant website for a food business showcasing their menu and ordering information.
 
 ---
 
-## Graphic Design Projects
-
-### Brand Identity & Logo Design
-- Brand Guideline Books
-- Arrow Logo System
-- Brand consistency packages
-
-### Social Media & Marketing
-- Social media graphics (holiday, motivation, announcements)
-- Marketing flyers (food, fashion, events)
-- Promotional materials (Fruity Zobo Drink, Empresstech, Sucy Couture)
-
-### Clients Featured
-- Empresstech
-- Sucy Couture (fashion)
-- Food & beverage brands
+## 9. Code Realm — coderea.netlify.app
+- **URL**: https://coderea.netlify.app/
+- **Type**: Tech education platform
+- **Description**: Built a tech education platform providing programming resources and learning content.
 
 ---
 
-## Full Portfolio
-View all projects at: https://grace-isitua.netlify.app/catalogue
+## 10. My Wishs — mywishs.netlify.app
+- **URL**: https://mywishs.netlify.app/
+- **Type**: Gift / wishlist application
+- **Description**: Developed a wishlist and gifting application with clean user interface.
+
+---
+
+## 11. Emcoders — emcoders.netlify.app
+- **URL**: https://emcoders.netlify.app/
+- **Type**: Tech community platform
+- **Description**: Built a developer community and learning platform interface.
+
+---
+
+## Notable Portfolio Highlights
+- Hotel Arex, EllaBell Hotel: Hospitality & Booking
+- Shoppadi: E-commerce & Shopping
+- Biokeft, Special Dishes Food: Food & Health
+- Sunbridge Consulting, Hamilton Properties: Corporate & Real Estate
+- Code Realm, Emcoders: Tech Education
+- Genis Graphics: Design Agency

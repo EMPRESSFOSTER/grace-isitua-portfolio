@@ -9,16 +9,24 @@ import type { KnowledgeDocument, RetrievalResult } from './types';
 const KNOWLEDGE_DIR = path.join(process.cwd(), 'knowledge');
 
 // Document keyword mappings for fast retrieval
+// Order matters: more specific topics should appear before generic ones
 const DOCUMENT_KEYWORDS: Record<string, string[]> = {
+  'lead-workflow': [
+    'hire', 'need a website', 'want to work', 'i need', 'build me', 'build a', 'build my',
+    'restaurant website', 'fashion website', 'business website', 'e-commerce website', 'ecommerce website',
+    'i want to hire', 'want to start a project', 'start a project', 'request a quote', 'get a quote',
+    'how do i hire', 'work with grace', 'work together', 'commission', 'project inquiry',
+    'need a developer', 'need a designer', 'need someone to build',
+  ],
+  'cv': ['cv', 'resume', 'curriculum', 'download', 'pdf', 'download grace'],
   'about': ['who', 'about', 'grace', 'background', 'story', 'bio', 'herself', 'professional', 'identity', 'entrepreneur', 'creative'],
   'services': ['services', 'service', 'offer', 'do', 'help', 'build', 'design', 'frontend', 'ui', 'ux', 'performance', 'education', 'mentor', 'brand', 'graphic'],
-  'experience': ['experience', 'work', 'job', 'company', 'role', 'career', 'history', 'digital abode', 'brand spark', 'freelance', 'years'],
-  'skills': ['skills', 'tech', 'technologies', 'stack', 'languages', 'tools', 'react', 'next', 'typescript', 'tailwind', 'figma', 'node', 'python', 'sql', 'vue', 'redux', 'zustand', 'framer', 'shadcn', 'jest', 'playwright', 'git'],
-  'projects': ['project', 'portfolio', 'work', 'shoppadi', 'sunbridge', 'wishs', 'biokeft', 'emcoders', 'hamilton', 'special dishes', 'code realm', 'ecommerce', 'real estate', 'food', 'catalogue', 'case study', 'live', 'built'],
-  'pricing': ['price', 'pricing', 'cost', 'charge', 'rate', 'fee', 'quote', 'budget', 'how much', 'affordable', 'expensive', 'payment', 'invoice'],
+  'experience': ['experience', 'work', 'job', 'company', 'role', 'career', 'history', 'digital abode', 'brand spark', 'freelance', 'years', 'ruthenbud', 'hotel arex', 'shoppadi experience', 'genis'],
+  'skills': ['skills', 'tech', 'technologies', 'stack', 'languages', 'tools', 'react', 'next', 'typescript', 'tailwind', 'figma', 'node', 'python', 'sql', 'vue', 'redux', 'zustand', 'framer', 'shadcn', 'jest', 'playwright', 'git', 'supabase', 'firebase'],
+  'projects': ['project', 'portfolio', 'work', 'shoppadi', 'sunbridge', 'wishs', 'biokeft', 'emcoders', 'hamilton', 'special dishes', 'code realm', 'hotel arex', 'ellabell', 'genis', 'ecommerce', 'real estate', 'food', 'catalogue', 'case study', 'live', 'built', 'freelance project'],
+  'pricing': ['price', 'pricing', 'cost', 'charge', 'rate', 'fee', 'quote', 'budget', 'how much', 'affordable', 'expensive', 'payment', 'invoice', 'naira', '₦', 'dollar', '$'],
   'faq': ['faq', 'question', 'frequently', 'international', 'remote', 'available', 'hire', 'wordpress', 'backend', 'mobile', 'hosting', 'maintenance', 'seo', 'deposit'],
   'contact': ['contact', 'reach', 'email', 'whatsapp', 'phone', 'linkedin', 'twitter', 'instagram', 'social', 'message', 'call'],
-  'cv': ['cv', 'resume', 'curriculum', 'download', 'pdf'],
 };
 
 let documentsCache: KnowledgeDocument[] | null = null;
@@ -101,10 +109,20 @@ export function retrieveRelevantDocs(query: string, maxDocs = 3): RetrievalResul
 
 /**
  * Build a context string from retrieved documents to inject into the system prompt.
+ * Retrieves more documents for commercial/lead intent queries.
  */
 export function buildKnowledgeContext(query: string): string {
   try {
-    const { documents } = retrieveRelevantDocs(query, 3);
+    // Detect lead/commercial intent to fetch more context
+    const queryLower = query.toLowerCase();
+    const isLeadIntent = [
+      'i need', 'i want', 'hire', 'build me', 'build a', 'build my', 'website',
+      'need a website', 'need a developer', 'need a designer', 'need someone',
+      'how much', 'price', 'cost', 'quote', 'budget', 'start a project',
+    ].some(kw => queryLower.includes(kw));
+
+    const maxDocs = isLeadIntent ? 5 : 3;
+    const { documents } = retrieveRelevantDocs(query, maxDocs);
 
     if (documents.length === 0) {
       return 'No specific knowledge document matched. Use Grace\'s general professional information to respond.';

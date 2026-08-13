@@ -19,11 +19,13 @@ function getResend(): Resend | null {
 
 export interface LeadEmailData {
   name: string;
-  email: string;
+  email?: string;
   company?: string;
   phone?: string;
   service?: string;
+  project_type?: string;
   projectDescription?: string;
+  features?: string;
   budget?: string;
   timeline?: string;
   source: string;
@@ -52,14 +54,16 @@ export async function sendLeadNotification(lead: LeadEmailData): Promise<boolean
     <div style="background: #0a0a0a; border: 1px solid #1a1a1a; border-radius: 12px; padding: 24px; margin-bottom: 24px;">
       <table style="width: 100%; border-collapse: collapse;">
         <tr><td style="padding: 8px 0; color: #888; font-size: 13px; width: 130px;">Name</td><td style="padding: 8px 0; color: #fff; font-weight: 600;">${lead.name}</td></tr>
-        <tr><td style="padding: 8px 0; color: #888; font-size: 13px;">Email</td><td style="padding: 8px 0;"><a href="mailto:${lead.email}" style="color: #a78bfa;">${lead.email}</a></td></tr>
-        ${lead.company ? `<tr><td style="padding: 8px 0; color: #888; font-size: 13px;">Company</td><td style="padding: 8px 0; color: #e5e5e5;">${lead.company}</td></tr>` : ''}
-        ${lead.phone ? `<tr><td style="padding: 8px 0; color: #888; font-size: 13px;">Phone</td><td style="padding: 8px 0; color: #e5e5e5;">${lead.phone}</td></tr>` : ''}
-        ${lead.service ? `<tr><td style="padding: 8px 0; color: #888; font-size: 13px;">Service</td><td style="padding: 8px 0; color: #e5e5e5;">${lead.service}</td></tr>` : ''}
-        ${lead.budget ? `<tr><td style="padding: 8px 0; color: #888; font-size: 13px;">Budget</td><td style="padding: 8px 0; color: #e5e5e5;">${lead.budget}</td></tr>` : ''}
-        ${lead.timeline ? `<tr><td style="padding: 8px 0; color: #888; font-size: 13px;">Timeline</td><td style="padding: 8px 0; color: #e5e5e5;">${lead.timeline}</td></tr>` : ''}
-        <tr><td style="padding: 8px 0; color: #888; font-size: 13px;">Source</td><td style="padding: 8px 0; color: #e5e5e5;">${lead.source}</td></tr>
-        <tr><td style="padding: 8px 0; color: #888; font-size: 13px;">Received</td><td style="padding: 8px 0; color: #e5e5e5;">${lead.createdAt}</td></tr>
+         ${lead.email ? `<tr><td style="padding: 8px 0; color: #888; font-size: 13px;">Email</td><td style="padding: 8px 0;"><a href="mailto:${lead.email}" style="color: #a78bfa;">${lead.email}</a></td></tr>` : ''}
+         ${lead.phone ? `<tr><td style="padding: 8px 0; color: #888; font-size: 13px;">Phone / WhatsApp</td><td style="padding: 8px 0; color: #e5e5e5;">${lead.phone}</td></tr>` : ''}
+         ${lead.company ? `<tr><td style="padding: 8px 0; color: #888; font-size: 13px;">Company</td><td style="padding: 8px 0; color: #e5e5e5;">${lead.company}</td></tr>` : ''}
+         ${lead.service ? `<tr><td style="padding: 8px 0; color: #888; font-size: 13px;">Service</td><td style="padding: 8px 0; color: #fbbf24;">${lead.service}</td></tr>` : ''}
+         ${lead.project_type ? `<tr><td style="padding: 8px 0; color: #888; font-size: 13px;">Project Type</td><td style="padding: 8px 0; color: #e5e5e5;">${lead.project_type}</td></tr>` : ''}
+         ${lead.budget ? `<tr><td style="padding: 8px 0; color: #888; font-size: 13px;">Budget</td><td style="padding: 8px 0; color: #34d399;">${lead.budget}</td></tr>` : ''}
+         ${lead.timeline ? `<tr><td style="padding: 8px 0; color: #888; font-size: 13px;">Timeline</td><td style="padding: 8px 0; color: #e5e5e5;">${lead.timeline}</td></tr>` : ''}
+         ${lead.features ? `<tr><td style="padding: 8px 0; color: #888; font-size: 13px;">Features</td><td style="padding: 8px 0; color: #e5e5e5;">${lead.features}</td></tr>` : ''}
+         <tr><td style="padding: 8px 0; color: #888; font-size: 13px;">Source</td><td style="padding: 8px 0; color: #e5e5e5;">Grace AI</td></tr>
+         <tr><td style="padding: 8px 0; color: #888; font-size: 13px;">Received</td><td style="padding: 8px 0; color: #e5e5e5;">${lead.createdAt}</td></tr>
       </table>
     </div>
 
@@ -70,10 +74,14 @@ export async function sendLeadNotification(lead: LeadEmailData): Promise<boolean
     </div>
     ` : ''}
 
-    <a href="mailto:${lead.email}?subject=Re: Your project inquiry&body=Hi ${lead.name},%0A%0AThank you for reaching out!%0A%0A"
-       style="display: inline-block; background: linear-gradient(135deg, #7c3aed, #db2777); color: #fff; font-weight: bold; padding: 14px 28px; border-radius: 100px; text-decoration: none; font-size: 15px;">
+    ${lead.email ? `<a href="mailto:${lead.email}?subject=Re: Your project inquiry&body=Hi ${lead.name},%0A%0AThank you for reaching out!%0A%0A"
+       style="display: inline-block; background: linear-gradient(135deg, #7c3aed, #db2777); color: #fff; font-weight: bold; padding: 14px 28px; border-radius: 100px; text-decoration: none; font-size: 15px; margin-right: 12px;">
       Reply to ${lead.name}
-    </a>
+    </a>` : ''}
+    ${lead.phone ? `<a href="https://wa.me/${lead.phone.replace(/[^0-9]/g, '')}"
+       style="display: inline-block; background: linear-gradient(135deg, #16a34a, #15803d); color: #fff; font-weight: bold; padding: 14px 28px; border-radius: 100px; text-decoration: none; font-size: 15px;">
+      WhatsApp ${lead.name}
+    </a>` : ''}
 
     <p style="color: #555; font-size: 12px; margin-top: 32px;">Sent by Grace AI Portfolio Assistant</p>
   </div>

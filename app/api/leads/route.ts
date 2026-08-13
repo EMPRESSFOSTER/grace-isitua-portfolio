@@ -39,11 +39,13 @@ export async function POST(req: NextRequest) {
   // ── Store in Supabase ─────────────────────────────────────────────────────
   const { data: insertedLead, error: dbError } = await insertLead({
     name: lead.name,
-    email: lead.email,
+    email: lead.email ?? null,
     company: lead.company ?? null,
     phone: lead.phone ?? null,
     service: lead.service ?? null,
+    project_type: lead.project_type ?? null,
     project_description: lead.projectDescription ?? null,
+    features: lead.features ?? null,
     budget: lead.budget ?? null,
     timeline: lead.timeline ?? null,
     source: lead.source,
@@ -52,7 +54,6 @@ export async function POST(req: NextRequest) {
   });
 
   if (dbError) {
-    // Still try to send the email even if DB insert fails
     console.error('[Grace AI] Failed to insert lead into Supabase:', dbError);
   }
 
@@ -63,7 +64,9 @@ export async function POST(req: NextRequest) {
     company: lead.company,
     phone: lead.phone,
     service: lead.service,
+    project_type: lead.project_type,
     projectDescription: lead.projectDescription,
+    features: lead.features,
     budget: lead.budget,
     timeline: lead.timeline,
     source: lead.source,
