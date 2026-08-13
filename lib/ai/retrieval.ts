@@ -28,19 +28,23 @@ function loadDocuments(): KnowledgeDocument[] {
 
   const docs: KnowledgeDocument[] = [];
 
-  for (const [name, keywords] of Object.entries(DOCUMENT_KEYWORDS)) {
-    const filePath = path.join(KNOWLEDGE_DIR, `${name}.md`);
-    try {
-      const content = fs.readFileSync(filePath, 'utf-8');
-      docs.push({
-        id: name,
-        title: name.charAt(0).toUpperCase() + name.slice(1),
-        content,
-        keywords,
-      });
-    } catch {
-      // Document not found — skip silently
+  try {
+    for (const [name, keywords] of Object.entries(DOCUMENT_KEYWORDS)) {
+      const filePath = path.join(KNOWLEDGE_DIR, `${name}.md`);
+      try {
+        const content = fs.readFileSync(filePath, 'utf-8');
+        docs.push({
+          id: name,
+          title: name.charAt(0).toUpperCase() + name.slice(1),
+          content,
+          keywords,
+        });
+      } catch {
+        // Single document not found or unreadable — skip silently
+      }
     }
+  } catch (err) {
+    console.error('[Grace AI] Knowledge retrieval error loading directory:', err instanceof Error ? err.message : String(err));
   }
 
   documentsCache = docs;
@@ -72,47 +76,61 @@ function scoreDocument(doc: KnowledgeDocument, query: string): number {
  * Returns up to maxDocs documents that scored above the threshold.
  */
 export function retrieveRelevantDocs(query: string, maxDocs = 3): RetrievalResult {
-  const documents = loadDocuments();
+  try {
+    const documents = loadDocuments();
 
-  const scored = documents
-    .map((doc) => ({ doc, score: scoreDocument(doc, query) }))
-    .filter(({ score }) => score > 0)
-    .sort((a, b) => b.score - a.score)
-    .slice(0, maxDocs)
-    .map(({ doc }) => doc);
+    const scored = documents
+      .map((doc) => ({ doc, score: scoreDocument(doc, query) }))
+      .filter(({ score }) => score > 0)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, maxDocs)
+      .map(({ doc }) => doc);
 
-  // If nothing matched, return a fallback set (about + services + contact)
-  if (scored.length === 0) {
-    const fallback = documents.filter((d) => ['about', 'services', 'contact'].includes(d.id));
-    return { documents: fallback, query };
+    // If nothing matched, return a fallback set (about + services + contact)
+    if (scored.length === 0) {
+      const fallback = documents.filter((d) => ['about', 'services', 'contact'].includes(d.id));
+      return { documents: fallback, query };
+    }
+
+    return { documents: scored, query };
+  } catch (err) {
+    console.error('[Grace AI] Knowledge retrieval error:', err instanceof Error ? err.message : String(err));
+    return { documents: [], query };
   }
-
-  return { documents: scored, query };
 }
 
 /**
  * Build a context string from retrieved documents to inject into the system prompt.
  */
 export function buildKnowledgeContext(query: string): string {
-  const { documents } = retrieveRelevantDocs(query, 3);
+  try {
+    const { documents } = retrieveRelevantDocs(query, 3);
 
-  if (documents.length === 0) {
-    return 'No specific knowledge document matched. Use Grace\'s general professional information to respond.';
+    if (documents.length === 0) {
+      return 'No specific knowledge document matched. Use Grace\'s general professional information to respond.';
+    }
+
+    return documents
+      .map((doc) => `### ${doc.title}\n\n${doc.content}`)
+      .join('\n\n---\n\n');
+  } catch (err) {
+    console.error('[Grace AI] Knowledge retrieval error:', err instanceof Error ? err.message : String(err));
+    return 'Grace Isitua is a Frontend Engineer and Digital Creative based in Nigeria specializing in React, Next.js, TypeScript, and UI/UX design.';
   }
-
-  return documents
-    .map((doc) => `### ${doc.title}\n\n${doc.content}`)
-    .join('\n\n---\n\n');
 }
 
 /**
  * Build a full context from all documents (used for general greetings / welcome).
  */
 export function buildFullContext(): string {
-  const documents = loadDocuments();
-  return documents
-    .map((doc) => `### ${doc.title}\n\n${doc.content}`)
-    .join('\n\n---\n\n');
+  try {
+    const documents = loadDocuments();
+    return documents
+      .map((doc) => `### ${doc.title}\n\n${doc.content}`)
+      .join('\n\n---\n\n');
+  } catch {
+    return 'Grace Isitua is a Frontend Engineer and Digital Creative based in Nigeria.';
+  }
 }
 
 /** Invalidate the document cache (useful after hot reloads in dev) */

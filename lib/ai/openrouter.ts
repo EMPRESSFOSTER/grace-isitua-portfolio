@@ -19,8 +19,16 @@ export class OpenRouterProvider implements AIProvider {
 
   constructor() {
     const key = process.env.OPENROUTER_API_KEY;
+    const hasKey = Boolean(key);
+    const hasModel = Boolean(process.env.OPENROUTER_MODEL);
+    const hasSiteUrl = Boolean(process.env.NEXT_PUBLIC_SITE_URL);
+
+    console.log(`[Grace AI] OPENROUTER_API_KEY configured: ${hasKey}`);
+    console.log(`[Grace AI] OPENROUTER_MODEL configured: ${hasModel}`);
+    console.log(`[Grace AI] NEXT_PUBLIC_SITE_URL configured: ${hasSiteUrl}`);
+
     if (!key) {
-      console.error('[Grace AI] FATAL: OPENROUTER_API_KEY environment variable is not set');
+      console.error('[Grace AI] OPENROUTER_API_KEY is missing at runtime');
       throw new Error('OPENROUTER_API_KEY environment variable is not set');
     }
     this.apiKey = key;
@@ -30,7 +38,7 @@ export class OpenRouterProvider implements AIProvider {
       process.env.NEXT_PUBLIC_SITE_URL || 'https://graceisitua.netlify.app';
 
     console.log(
-      `[Grace AI] OpenRouterProvider initialised | model: ${this.model} | site: ${this.siteUrl}`,
+      `[Grace AI] OpenRouterProvider initialised | provider: openrouter | model: ${this.model} | site: ${this.siteUrl}`,
     );
   }
 
@@ -48,7 +56,17 @@ export class OpenRouterProvider implements AIProvider {
   private async safeReadErrorBody(response: Response): Promise<string> {
     try {
       const text = await response.text();
-      // Truncate long bodies; we only need the key diagnostic fields
+      try {
+        const parsed = JSON.parse(text);
+        if (parsed?.error?.message) {
+          return String(parsed.error.message);
+        }
+        if (parsed?.message) {
+          return String(parsed.message);
+        }
+      } catch {
+        // Not valid JSON
+      }
       return text.slice(0, 500);
     } catch {
       return '(could not read response body)';
@@ -61,70 +79,43 @@ export class OpenRouterProvider implements AIProvider {
     body: string,
     context: string,
   ): AIProviderError {
-    const safeBody = body.replace(/"Authorization":\s*"[^"]*"/gi, '"Authorization":"[REDACTED]"');
+    const safeBody = body
+      .replace(/Bearer\s+[A-Za-z0-9._-]+/gi, 'Bearer [REDACTED]')
+      .replace(/"Authorization":\s*"[^"]*"/gi, '"Authorization":"[REDACTED]"');
+
+    console.error(
+      `[Grace AI] OpenRouter error\n` +
+        `status: ${status}\n` +
+        `context: ${context}\n` +
+        `model: ${this.model}\n` +
+        `message: ${safeBody}`,
+    );
 
     if (status === 401) {
-      console.error(
-        `[Grace AI] OpenRouter ${context} failed — 401 Unauthorized.\n` +
-          `  model: ${this.model}\n` +
-          `  body: ${safeBody}\n` +
-          `  Check that OPENROUTER_API_KEY is set correctly in Netlify environment variables.`,
-      );
-      return new AIProviderError('api_error', 'OpenRouter authentication failed (401)');
+      return new AIProviderError('api_error', `OpenRouter authentication failed (401): ${safeBody}`);
     }
 
     if (status === 402) {
-      console.error(
-        `[Grace AI] OpenRouter ${context} failed — 402 Payment Required.\n` +
-          `  model: ${this.model}\n` +
-          `  body: ${safeBody}\n` +
-          `  The account has no credits or the model requires payment. Ensure OPENROUTER_MODEL=openrouter/free is set.`,
-      );
-      return new AIProviderError('quota', 'OpenRouter quota exceeded (402)');
+      return new AIProviderError('quota', `OpenRouter quota exceeded (402): ${safeBody}`);
     }
 
     if (status === 403) {
-      console.error(
-        `[Grace AI] OpenRouter ${context} failed — 403 Forbidden.\n` +
-          `  model: ${this.model}\n` +
-          `  body: ${safeBody}`,
-      );
-      return new AIProviderError('api_error', 'OpenRouter access forbidden (403)');
+      return new AIProviderError('api_error', `OpenRouter access forbidden (403): ${safeBody}`);
     }
 
     if (status === 404) {
-      console.error(
-        `[Grace AI] OpenRouter ${context} failed — 404 Not Found.\n` +
-          `  model: ${this.model}\n` +
-          `  body: ${safeBody}\n` +
-          `  The model "${this.model}" may not exist. Check OPENROUTER_MODEL env var.`,
-      );
       return new AIProviderError('api_error', `OpenRouter model not found (404) — model: ${this.model}`);
     }
 
     if (status === 429) {
-      console.warn(
-        `[Grace AI] OpenRouter ${context} rate limited — 429.\n` +
-          `  model: ${this.model}`,
-      );
-      return new AIProviderError('rate_limit', 'OpenRouter rate limit exceeded (429)');
+      return new AIProviderError('rate_limit', `OpenRouter rate limit exceeded (429): ${safeBody}`);
     }
 
     if (status >= 500) {
-      console.error(
-        `[Grace AI] OpenRouter ${context} server error — ${status}.\n` +
-          `  model: ${this.model}\n` +
-          `  body: ${safeBody}`,
-      );
-      return new AIProviderError('server_error', `OpenRouter service error (${status})`);
+      return new AIProviderError('server_error', `OpenRouter service error (${status}): ${safeBody}`);
     }
 
-    console.error(
-      `[Grace AI] OpenRouter ${context} unexpected error — ${status}.\n` +
-        `  model: ${this.model}\n` +
-        `  body: ${safeBody}`,
-    );
-    return new AIProviderError('api_error', `OpenRouter API error (${status})`);
+    return new AIProviderError('api_error', `OpenRouter API error (${status}): ${safeBody}`);
   }
 
   // ── Non-streaming chat ────────────────────────────────────────────────────
@@ -133,7 +124,7 @@ export class OpenRouterProvider implements AIProvider {
     const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
     const startMs = Date.now();
 
-    console.log(`[Grace AI] chat() | model: ${this.model}`);
+    console.log(`[Grace AI] Provider: openrouter | Model: ${request.model || this.model} | Calling OpenRouter (sync)`);
 
     try {
       const response = await fetch(`${OPENROUTER_BASE_URL}/chat/completions`, {
@@ -151,6 +142,8 @@ export class OpenRouterProvider implements AIProvider {
 
       clearTimeout(timeoutId);
       const durationMs = Date.now() - startMs;
+
+      console.log(`[Grace AI] OpenRouter response status: ${response.status} | ${durationMs}ms`);
 
       if (!response.ok) {
         const body = await this.safeReadErrorBody(response);
@@ -198,7 +191,7 @@ export class OpenRouterProvider implements AIProvider {
     const startMs = Date.now();
     const model = request.model || this.model;
 
-    console.log(`[Grace AI] chatStream() | model: ${model}`);
+    console.log(`[Grace AI] Provider: openrouter | Model: ${model} | Calling OpenRouter (stream)`);
 
     let response: Response;
     try {
@@ -230,6 +223,8 @@ export class OpenRouterProvider implements AIProvider {
 
     clearTimeout(timeoutId);
     const durationMs = Date.now() - startMs;
+
+    console.log(`[Grace AI] OpenRouter response status: ${response.status} | ${durationMs}ms`);
 
     if (!response.ok) {
       const body = await this.safeReadErrorBody(response);
@@ -265,12 +260,27 @@ export class OpenRouterProvider implements AIProvider {
 
             // Process all complete SSE messages in the buffer.
             // SSE messages are delimited by '\n\n' or '\r\n\r\n'.
-            let boundary: number;
-            while ((boundary = buffer.indexOf('\n\n')) !== -1) {
-              const message = buffer.slice(0, boundary);
-              buffer = buffer.slice(boundary + 2);
+            while (true) {
+              const idxNn = buffer.indexOf('\n\n');
+              const idxRnRn = buffer.indexOf('\r\n\r\n');
 
-              for (const line of message.split('\n')) {
+              if (idxNn === -1 && idxRnRn === -1) break;
+
+              let boundary: number;
+              let delimLen: number;
+
+              if (idxNn !== -1 && (idxRnRn === -1 || idxNn < idxRnRn)) {
+                boundary = idxNn;
+                delimLen = 2;
+              } else {
+                boundary = idxRnRn;
+                delimLen = 4;
+              }
+
+              const message = buffer.slice(0, boundary);
+              buffer = buffer.slice(boundary + delimLen);
+
+              for (const line of message.split(/\r?\n/)) {
                 const trimmed = line.trim();
                 if (!trimmed.startsWith('data:')) continue;
 
@@ -288,8 +298,6 @@ export class OpenRouterProvider implements AIProvider {
                   }
                 } catch {
                   // Malformed JSON in a single SSE line — skip it.
-                  // (This is a genuine parse error, not a split-chunk issue,
-                  //  since we only process complete '\n\n'-terminated messages.)
                 }
               }
             }
@@ -297,7 +305,7 @@ export class OpenRouterProvider implements AIProvider {
 
           // Flush any remaining buffer content (stream ended without [DONE])
           if (buffer.trim()) {
-            for (const line of buffer.split('\n')) {
+            for (const line of buffer.split(/\r?\n/)) {
               const trimmed = line.trim();
               if (!trimmed.startsWith('data:')) continue;
               const data = trimmed.slice(5).trim();
@@ -340,3 +348,4 @@ export class AIProviderError extends Error {
     this.name = 'AIProviderError';
   }
 }
+

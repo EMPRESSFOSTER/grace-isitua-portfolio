@@ -19,6 +19,27 @@ const FRIENDLY_ERROR =
 export async function POST(req: NextRequest) {
   const requestStartMs = Date.now();
 
+  console.log('[Grace AI] API route start | POST /api/ai/chat');
+
+  // ── 0. Runtime Environment Verification ──────────────────────────────────
+  const hasKey = Boolean(process.env.OPENROUTER_API_KEY);
+  const hasModel = Boolean(process.env.OPENROUTER_MODEL);
+  const hasSiteUrl = Boolean(process.env.NEXT_PUBLIC_SITE_URL);
+
+  console.log(
+    `[Grace AI] OPENROUTER_API_KEY configured: ${hasKey}\n` +
+      `[Grace AI] OPENROUTER_MODEL configured: ${hasModel}\n` +
+      `[Grace AI] NEXT_PUBLIC_SITE_URL configured: ${hasSiteUrl}`,
+  );
+
+  if (!hasKey) {
+    console.error('[Grace AI] OPENROUTER_API_KEY is missing at runtime');
+    return Response.json(
+      { error: FRIENDLY_ERROR, code: 'misconfigured' },
+      { status: 503 },
+    );
+  }
+
   // ── 1. Rate Limiting ──────────────────────────────────────────────────────
   const ip = getClientIp(req);
   const rateResult = checkRateLimit(ip, 'chat');
@@ -42,19 +63,38 @@ export async function POST(req: NextRequest) {
   try {
     body = await req.json();
   } catch {
+    console.warn('[Grace AI] Request validation failed — Invalid JSON body');
     return Response.json({ error: 'Invalid request format', code: 'bad_request' }, { status: 400 });
   }
 
   const parsed = ChatRequestSchema.safeParse(body);
   if (!parsed.success) {
     const firstError = parsed.error.issues[0]?.message ?? 'Invalid request';
+    console.warn(`[Grace AI] Request validation failed — ${firstError}`);
     return Response.json({ error: firstError, code: 'validation_error' }, { status: 400 });
   }
 
   const { message, history } = parsed.data;
+  console.log(`[Grace AI] Request validated | message length: ${message.length}`);
+
+  // Check if non-streaming diagnostic mode is requested
+  const isSyncMode =
+    req.nextUrl.searchParams.get('stream') === 'false' ||
+    (body as { stream?: boolean })?.stream === false;
 
   // ── 3. Retrieve Relevant Knowledge ────────────────────────────────────────
-  const knowledgeContext = buildKnowledgeContext(message);
+  let knowledgeContext = '';
+  try {
+    knowledgeContext = buildKnowledgeContext(message);
+    console.log('[Grace AI] Knowledge retrieval completed');
+  } catch (kErr) {
+    console.error(
+      '[Grace AI] Knowledge retrieval error:',
+      kErr instanceof Error ? kErr.message : String(kErr),
+    );
+    knowledgeContext =
+      'Grace Isitua is a Frontend Engineer and Digital Creative based in Nigeria specializing in React, Next.js, TypeScript, and UI/UX design.';
+  }
 
   // ── 4. Build System Prompt ────────────────────────────────────────────────
   const systemPrompt = buildSystemPrompt(knowledgeContext);
@@ -62,35 +102,46 @@ export async function POST(req: NextRequest) {
   // ── 5. Build Message Array ────────────────────────────────────────────────
   const messages: ChatMessage[] = [
     { role: 'system', content: systemPrompt },
-    // Include conversation history (capped at 20 messages by schema)
     ...(history ?? []).map((m) => ({
       role: m.role as 'user' | 'assistant',
       content: m.content,
     })),
-    // Current user message
     { role: 'user', content: message },
   ];
 
-  // ── 6. Call AI Provider (Streaming) ──────────────────────────────────────
+  // ── 6. Call AI Provider (Streaming or Non-Streaming Diagnostic) ───────────
   try {
     console.log(
-      `[Grace AI] Request started | provider: openrouter | messages: ${messages.length}`,
+      `[Grace AI] Provider initialization | provider: openrouter | messages: ${messages.length} | mode: ${isSyncMode ? 'sync' : 'stream'}`,
     );
 
     const provider = getAIProvider();
+
+    if (isSyncMode) {
+      const chatResponse = await provider.chat({ messages });
+      const durationMs = Date.now() - requestStartMs;
+      console.log(`[Grace AI] Non-streaming request completed | ${durationMs}ms`);
+
+      insertAnalyticsEvent({
+        event: 'message_sent',
+        conversation_id: parsed.data.conversationId ?? null,
+        metadata: { ip_hash: hashIp(ip) },
+      }).catch(() => {});
+
+      return Response.json(chatResponse);
+    }
+
     const stream = await provider.chatStream({ messages });
 
     const durationMs = Date.now() - requestStartMs;
-    console.log(`[Grace AI] Stream started | ${durationMs}ms`);
+    console.log(`[Grace AI] Stream initialized successfully | ${durationMs}ms`);
 
-    // Log analytics event (fire and forget — don't block response)
     insertAnalyticsEvent({
       event: 'message_sent',
       conversation_id: parsed.data.conversationId ?? null,
       metadata: { ip_hash: hashIp(ip) },
     }).catch(() => {});
 
-    // Return the streaming response
     return new Response(stream, {
       status: 200,
       headers: {
@@ -105,9 +156,8 @@ export async function POST(req: NextRequest) {
     const durationMs = Date.now() - requestStartMs;
 
     if (error instanceof AIProviderError) {
-      // Structured log — enough for Netlify logs to diagnose the failure
       console.error(
-        `[Grace AI] Provider error | code: ${error.code} | ${durationMs}ms\n` +
+        `[Grace AI] Provider error [${error.code}] | ${durationMs}ms\n` +
           `  message: ${error.message}`,
       );
 
@@ -138,18 +188,15 @@ export async function POST(req: NextRequest) {
       return Response.json({ error: FRIENDLY_ERROR, code: error.code }, { status: 503 });
     }
 
-    // Catch provider constructor errors (e.g. missing API key)
     if (error instanceof Error && error.message.includes('OPENROUTER_API_KEY')) {
       console.error(
-        `[Grace AI] FATAL: OPENROUTER_API_KEY is missing from the environment.\n` +
-          `  Set it in Netlify Dashboard → Site Settings → Environment Variables.\n` +
-          `  Duration: ${durationMs}ms`,
+        `[Grace AI] OPENROUTER_API_KEY is missing at runtime | ${durationMs}ms`,
       );
       return Response.json({ error: FRIENDLY_ERROR, code: 'misconfigured' }, { status: 503 });
     }
 
     console.error(
-      `[Grace AI] Unexpected error | ${durationMs}ms\n`,
+      `[Grace AI] Unexpected exception | ${durationMs}ms\n`,
       error,
     );
     return Response.json({ error: FRIENDLY_ERROR, code: 'internal_error' }, { status: 500 });
@@ -166,3 +213,4 @@ function hashIp(ip: string): string {
   }
   return Math.abs(hash).toString(36);
 }
+

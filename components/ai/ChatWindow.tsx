@@ -133,6 +133,21 @@ export function ChatWindow({ onClose }: ChatWindowProps) {
           return;
         }
 
+        // Handle JSON response (non-streaming diagnostic mode)
+        const contentType = response.headers.get('Content-Type') || '';
+        if (contentType.includes('application/json')) {
+          const jsonData = await response.json();
+          const content = jsonData.content || jsonData.message || '';
+          setMessages((prev) =>
+            prev.map((m) =>
+              m.id === assistantMessage.id
+                ? { ...m, content, isStreaming: false }
+                : m
+            )
+          );
+          return;
+        }
+
         // Stream the response
         const reader = response.body?.getReader();
         if (!reader) throw new Error('No response body');
