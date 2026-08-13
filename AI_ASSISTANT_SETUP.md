@@ -158,4 +158,5 @@ Features:
 | Assistant returns friendly error message | `OPENROUTER_API_KEY` missing or OpenRouter free model rate limited | Check terminal/server logs. Verify `OPENROUTER_API_KEY` is set. |
 | Leads submit but email not received | `RESEND_API_KEY` not configured or domain unverified | Check server logs (`[Grace AI] Lead email failed`). Lead data is still saved safely in Supabase. |
 | Admin dashboard shows 0 leads | Supabase keys not set or schema not applied | Execute `supabase/schema.sql` in Supabase SQL editor. |
+| Lead submission fails for phone-only | Database has old NOT NULL constraint on email | Run `ALTER TABLE public.leads ALTER COLUMN email DROP NOT NULL;` in Supabase SQL Editor. |
 | CV button shows error | `public/Grace-Isitua-CV.pdf` missing | Ensure `public/Grace-Isitua-CV.pdf` exists. |

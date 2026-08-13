@@ -8,7 +8,7 @@
 create table if not exists public.leads (
   id uuid primary key default gen_random_uuid(),
   name text not null,
-  email text not null,
+  email text, -- optional (email OR phone required)
   company text,
   phone text,
   service text,

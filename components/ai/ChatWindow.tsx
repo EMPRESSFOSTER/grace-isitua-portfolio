@@ -72,6 +72,40 @@ export function ChatWindow({ onClose }: ChatWindowProps) {
       .map((m) => ({ role: m.role, content: m.content }));
   }, [messages]);
 
+  const handlePotentialLeadSubmission = useCallback(async (content: string) => {
+    const match = content.match(/\[SUBMIT_LEAD:\s*(\{[\s\S]*?\})\s*\]/);
+    if (!match) return content;
+
+    const jsonStr = match[1];
+    const cleanedContent = content.replace(/\[SUBMIT_LEAD:\s*\{[\s\S]*?\}\s*\]/g, '').trim();
+
+    try {
+      const leadData = JSON.parse(jsonStr);
+      
+      const res = await fetch('/api/leads', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...leadData,
+          conversationId,
+          source: 'ai_assistant',
+        }),
+      });
+
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        console.error('[Grace AI] Failed to submit lead:', errData.error || res.statusText);
+      } else {
+        console.log('[Grace AI] Lead submitted successfully!');
+        trackEvent('lead_submitted', conversationId);
+      }
+    } catch (err) {
+      console.error('[Grace AI] Error parsing lead JSON or submitting lead:', err);
+    }
+
+    return cleanedContent;
+  }, [conversationId]);
+
   const sendMessage = useCallback(
     async (messageText: string) => {
       const text = messageText.trim();
@@ -137,11 +171,12 @@ export function ChatWindow({ onClose }: ChatWindowProps) {
         const contentType = response.headers.get('Content-Type') || '';
         if (contentType.includes('application/json')) {
           const jsonData = await response.json();
-          const content = jsonData.content || jsonData.message || '';
+          const rawContent = jsonData.content || jsonData.message || '';
+          const cleanedContent = await handlePotentialLeadSubmission(rawContent);
           setMessages((prev) =>
             prev.map((m) =>
               m.id === assistantMessage.id
-                ? { ...m, content, isStreaming: false }
+                ? { ...m, content: cleanedContent, isStreaming: false }
                 : m
             )
           );
@@ -162,20 +197,28 @@ export function ChatWindow({ onClose }: ChatWindowProps) {
           const chunk = decoder.decode(value, { stream: true });
           accumulated += chunk;
 
+          // Strip the tag from display while streaming
+          let displayContent = accumulated;
+          const tagIndex = displayContent.indexOf('[SUBMIT_LEAD:');
+          if (tagIndex !== -1) {
+            displayContent = displayContent.substring(0, tagIndex).trim();
+          }
+
           setMessages((prev) =>
             prev.map((m) =>
               m.id === assistantMessage.id
-                ? { ...m, content: accumulated, isStreaming: true }
+                ? { ...m, content: displayContent, isStreaming: true }
                 : m
             )
           );
         }
 
         // Mark streaming complete
+        const cleanedContent = await handlePotentialLeadSubmission(accumulated);
         setMessages((prev) =>
           prev.map((m) =>
             m.id === assistantMessage.id
-              ? { ...m, content: accumulated, isStreaming: false }
+              ? { ...m, content: cleanedContent, isStreaming: false }
               : m
           )
         );
@@ -245,27 +288,94 @@ export function ChatWindow({ onClose }: ChatWindowProps) {
     window.open('/api/cv', '_blank');
   };
 
+  const parseInlineElements = (text: string) => {
+    // Regex to match bold, markdown links, or bare urls
+    const regex = /(\*\*.*?\*\*|\[.*?\]\(.*?\)|https?:\/\/[^\s]+)/g;
+    const parts = text.split(regex);
+    
+    return parts.map((part, index) => {
+      if (part.startsWith('**') && part.endsWith('**')) {
+        return (
+          <strong key={index} className="text-white font-semibold">
+            {part.slice(2, -2)}
+          </strong>
+        );
+      }
+      
+      const linkMatch = part.match(/^\[(.*?)\]\((.*?)\)$/);
+      if (linkMatch) {
+        const [, linkText, url] = linkMatch;
+        return (
+          <a
+            key={index}
+            href={url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-purple-400 hover:text-purple-300 underline font-medium transition-colors"
+          >
+            {linkText}
+          </a>
+        );
+      }
+
+      if (part.startsWith('http://') || part.startsWith('https://')) {
+        const cleanUrl = part.replace(/[.,;:!]$/, '');
+        return (
+          <a
+            key={index}
+            href={cleanUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-purple-400 hover:text-purple-300 underline font-medium transition-colors"
+          >
+            {cleanUrl}
+          </a>
+        );
+      }
+
+      return <span key={index}>{part}</span>;
+    });
+  };
+
   const renderContent = (content: string) => {
-    // Simple markdown-like rendering: bold, line breaks, links — no arbitrary HTML
     const lines = content.split('\n');
     return lines.map((line, i) => {
-      // Bold **text**
-      const parts = line.split(/(\*\*[^*]+\*\*)/g);
-      const rendered = parts.map((part, j) => {
-        if (part.startsWith('**') && part.endsWith('**')) {
+      // Unordered list item: starts with "- " or "* "
+      const isUnorderedList = line.trim().startsWith('- ') || line.trim().startsWith('* ');
+      // Ordered list item: starts with "1. ", "2. ", etc.
+      const isOrderedList = /^\d+\.\s/.test(line.trim());
+
+      if (isUnorderedList) {
+        const cleanLine = line.trim().slice(2);
+        return (
+          <div key={i} className="flex items-start gap-2 ml-4 my-1.5">
+            <span className="text-purple-400 mt-1.5 flex-shrink-0 w-1.5 h-1.5 rounded-full bg-purple-400" />
+            <span className="text-gray-200 leading-relaxed flex-1">
+              {parseInlineElements(cleanLine)}
+            </span>
+          </div>
+        );
+      }
+
+      if (isOrderedList) {
+        const match = line.trim().match(/^(\d+)\.\s(.*)/);
+        if (match) {
+          const [, num, cleanLine] = match;
           return (
-            <strong key={j} className="text-white font-semibold">
-              {part.slice(2, -2)}
-            </strong>
+            <div key={i} className="flex items-start gap-2 ml-4 my-1.5">
+              <span className="text-purple-400 font-semibold flex-shrink-0 w-5 text-right">{num}.</span>
+              <span className="text-gray-200 leading-relaxed flex-1">
+                {parseInlineElements(cleanLine)}
+              </span>
+            </div>
           );
         }
-        return <span key={j}>{part}</span>;
-      });
+      }
+
       return (
-        <span key={i}>
-          {rendered}
-          {i < lines.length - 1 && <br />}
-        </span>
+        <p key={i} className="text-gray-200 leading-relaxed min-h-[1rem]">
+          {parseInlineElements(line)}
+        </p>
       );
     });
   };
