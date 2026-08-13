@@ -20,6 +20,8 @@ export async function POST(req: NextRequest) {
     );
   }
 
+  console.log('[Grace Lead] Received submission from IP:', ip);
+
   // ── Parse & Validate ──────────────────────────────────────────────────────
   let body: unknown;
   try {
@@ -35,8 +37,10 @@ export async function POST(req: NextRequest) {
   }
 
   const lead = parsed.data;
+  console.log('[Grace Lead] Validation passed — proceeding to store lead for:', lead.name);
 
   // ── Store in Supabase ─────────────────────────────────────────────────────
+  console.log('[Grace Lead] Supabase insertion started — name:', lead.name);
   const { data: insertedLead, error: dbError } = await insertLead({
     name: lead.name,
     email: lead.email ?? null,
@@ -54,10 +58,20 @@ export async function POST(req: NextRequest) {
   });
 
   if (dbError) {
-    console.error('[Grace AI] Failed to insert lead into Supabase:', dbError);
+    // Supabase failure is critical — the lead was NOT stored.
+    // Return 500 immediately so the frontend can show an honest error.
+    const errDetail = (dbError as { message?: string })?.message ?? String(dbError);
+    console.error('[Grace Lead] Supabase insertion FAILED:', errDetail);
+    return Response.json(
+      { error: 'Something went wrong saving your details. Please contact Grace directly at graceantony202@gmail.com', code: 'storage_error' },
+      { status: 500 }
+    );
   }
 
+  console.log('[Grace Lead] Supabase insertion successful — lead ID:', insertedLead?.id);
+
   // ── Send Email Notification ───────────────────────────────────────────────
+  console.log('[Grace Lead] Resend notification started');
   const emailSent = await sendLeadNotification({
     name: lead.name,
     email: lead.email,
@@ -73,15 +87,11 @@ export async function POST(req: NextRequest) {
     createdAt: new Date().toLocaleString('en-GB', { timeZone: 'Africa/Lagos' }),
   });
 
-  if (!emailSent) {
-    console.error('[Grace AI] Lead email notification failed — lead ID:', insertedLead?.id ?? 'unknown');
-  }
-
-  if (dbError && !emailSent) {
-    return Response.json(
-      { error: 'Something went wrong. Please contact Grace directly at graceantony202@gmail.com', code: 'storage_error' },
-      { status: 500 }
-    );
+  if (emailSent) {
+    console.log('[Grace Lead] Resend notification successful');
+  } else {
+    // Non-critical: lead is already saved — just log it
+    console.error('[Grace Lead] Resend notification FAILED (lead ID:', insertedLead?.id, ') — check RESEND_API_KEY and FROM_EMAIL domain');
   }
 
   return Response.json(

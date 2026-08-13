@@ -77,11 +77,12 @@ export function ChatWindow({ onClose }: ChatWindowProps) {
     if (!match) return content;
 
     const jsonStr = match[1];
+    // Strip the command tag from the visible message regardless of outcome
     const cleanedContent = content.replace(/\[SUBMIT_LEAD:\s*\{[\s\S]*?\}\s*\]/g, '').trim();
 
     try {
       const leadData = JSON.parse(jsonStr);
-      
+
       const res = await fetch('/api/leads', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -94,16 +95,27 @@ export function ChatWindow({ onClose }: ChatWindowProps) {
 
       if (!res.ok) {
         const errData = await res.json().catch(() => ({}));
-        console.error('[Grace AI] Failed to submit lead:', errData.error || res.statusText);
-      } else {
-        console.log('[Grace AI] Lead submitted successfully!');
-        trackEvent('lead_submitted', conversationId);
+        console.error('[Grace AI] Lead submission failed:', errData.error || res.statusText);
+        // Replace the AI's optimistic "Done!" message with an honest error
+        return (
+          cleanedContent.replace(
+            /done!?\s*i['']?ve?\s+sent\s+your\s+.*?(?:to grace\.?|details\.?)/gi,
+            ''
+          ).trim() +
+          "\n\nI wasn't able to send your details right now — there was a technical issue on my end. Please contact Grace directly at **graceantony202@gmail.com** and she'll get back to you soon. Sorry for the inconvenience!"
+        );
       }
-    } catch (err) {
-      console.error('[Grace AI] Error parsing lead JSON or submitting lead:', err);
-    }
 
-    return cleanedContent;
+      console.log('[Grace AI] Lead submitted successfully!');
+      trackEvent('lead_submitted', conversationId);
+      return cleanedContent;
+    } catch (err) {
+      console.error('[Grace AI] Error parsing or submitting lead:', err);
+      return (
+        cleanedContent +
+        "\n\nI wasn't able to send your details right now — there was a technical issue. Please contact Grace directly at **graceantony202@gmail.com**."
+      );
+    }
   }, [conversationId]);
 
   const sendMessage = useCallback(

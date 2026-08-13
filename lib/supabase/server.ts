@@ -11,6 +11,7 @@ let _serverClient: ReturnType<typeof createClient> | null = null;
 
 export function getSupabaseServer() {
   if (!supabaseUrl || !serviceRoleKey) {
+    console.error('[Grace Lead] Supabase MISCONFIGURED — missing env vars. NEXT_PUBLIC_SUPABASE_URL:', !!supabaseUrl, '| SUPABASE_SERVICE_ROLE_KEY:', !!serviceRoleKey);
     return null;
   }
   if (!_serverClient) {
@@ -29,10 +30,13 @@ export function getSupabaseServer() {
 export async function insertLead(data: Record<string, unknown>): Promise<{ data: { id: string } | null; error: unknown }> {
   const client = getSupabaseServer();
   if (!client) {
-    console.warn('[Grace AI] Supabase not configured — lead not stored');
+    console.error('[Grace Lead] insertLead SKIPPED — Supabase client not initialised (check NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY in Netlify env vars)');
     return { data: null, error: new Error('Supabase not configured') };
   }
   const res = await client.from('leads').insert(data as any).select('id').single();
+  if (res.error) {
+    console.error('[Grace Lead] DB insert error:', res.error.message, '| code:', res.error.code);
+  }
   return { data: res.data as { id: string } | null, error: res.error };
 }
 
