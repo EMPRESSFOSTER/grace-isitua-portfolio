@@ -359,8 +359,17 @@ export class OpenRouterProvider implements AIProvider {
 }
 
 export class AIProviderError extends Error {
+  public readonly code:
+    | 'rate_limit'
+    | 'quota'
+    | 'server_error'
+    | 'api_error'
+    | 'timeout'
+    | 'network_error'
+    | 'malformed_response';
+
   constructor(
-    public readonly code:
+    code:
       | 'rate_limit'
       | 'quota'
       | 'server_error'
@@ -372,6 +381,7 @@ export class AIProviderError extends Error {
   ) {
     super(message);
     this.name = 'AIProviderError';
+    this.code = code;
   }
 }
 
